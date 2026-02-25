@@ -364,78 +364,117 @@ export default function MapView({
           </>
         )}
 
-        {listingsWithCoords?.map((listing) => (
-          <OverlayView
-            key={listing.id}
-            position={{
-              lat: listing.latitude!,
-              lng: listing.longitude!,
-            }}
-            mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-          >
-            <div className="relative flex flex-col items-center">
-              {selectedListing?.id === listing.id && (
-                <Link
-                  target="_blank"
-                  href={`/listing-detail/${listing.id}`}
-                  className="absolute bottom-full mb-4 w-64 bg-white rounded-xl shadow-xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300 z-50 transition-all"
-                >
-                  <div
-                    className="h-32 w-full bg-cover bg-center"
-                    style={{
-                      backgroundImage: `url('${
-                        listing.images?.[0]?.image_url || "/placeholder.png"
-                      }')`,
-                    }}
-                  />
-                  <div className="p-3">
-                    <div className="flex justify-between items-center mb-1">
-                      <span className="text-primary font-extrabold text-base">
-                        {formatVietnamesePrice(listing.price)}
-                      </span>
-                      {listing.area && (
-                        <span className="text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">
-                          {listing.area} m²
-                        </span>
-                      )}
+        {/* Group markers with same coordinates */}
+        {Object.values(
+          listingsWithCoords?.reduce((acc: any, listing) => {
+            const key = `${listing.latitude}-${listing.longitude}`;
+            if (!acc[key]) {
+              acc[key] = {
+                id: key,
+                latitude: listing.latitude,
+                longitude: listing.longitude,
+                listings: [],
+              };
+            }
+            acc[key].listings.push(listing);
+            return acc;
+          }, {}) || {}
+        ).map((group: any) => {
+          const isSelected =
+            selectedListing &&
+            selectedListing.latitude === group.latitude &&
+            selectedListing.longitude === group.longitude;
+          const count = group.listings.length;
+          const firstListing = group.listings[0];
+
+          return (
+            <OverlayView
+              key={group.id}
+              position={{
+                lat: group.latitude,
+                lng: group.longitude,
+              }}
+              mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+            >
+              <div className="relative flex flex-col items-center">
+                {isSelected && (
+                  <div className="absolute bottom-full mb-4 w-72 bg-white rounded-xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300 z-50">
+                    <div className="max-h-80 overflow-y-auto custom-scrollbar">
+                      {group.listings.map((item: any, idx: number) => (
+                        <Link
+                          key={item.id}
+                          target="_blank"
+                          href={`/listing-detail/${item.id}`}
+                          className={`flex gap-3 p-3 hover:bg-slate-50 transition-colors ${
+                            idx !== group.listings.length - 1
+                              ? "border-b border-slate-100"
+                              : ""
+                          }`}
+                        >
+                          <div
+                            className="h-16 w-20 shrink-0 rounded-lg bg-cover bg-center border border-slate-100"
+                            style={{
+                              backgroundImage: `url('${
+                                item.images?.[0]?.image_url || "/placeholder.png"
+                              }')`,
+                            }}
+                          />
+                          <div className="flex-1 min-w-0">
+                            <p className="text-primary font-black text-sm mb-0.5">
+                              {formatVietnamesePrice(item.price)}
+                            </p>
+                            <p className="text-slate-800 text-[11px] font-bold truncate">
+                              {item.title}
+                            </p>
+                            <div className="flex items-center gap-1.5 mt-1">
+                              {item.area && (
+                                <span className="text-[9px] bg-slate-100 px-1 py-0.5 rounded text-slate-500 font-medium">
+                                  {item.area}m²
+                                </span>
+                              )}
+                              <span className="text-[9px] text-slate-400 truncate">
+                                {item.address?.split(",").slice(0, 2).join(",")}
+                              </span>
+                            </div>
+                          </div>
+                        </Link>
+                      ))}
                     </div>
-                    <p className="text-slate-800 text-xs font-bold truncate">
-                      {listing.title}
-                    </p>
-                    <p className="text-slate-500 text-[10px] truncate">
-                      {listing.address}
-                    </p>
+                    <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white rotate-45" />
                   </div>
-                  <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white rotate-45" />
-                </Link>
-              )}
+                )}
 
-              {/* Price Pin */}
-              <div
-                onClick={() =>
-                  setSelectedListing(
-                    selectedListing?.id === listing.id ? null : listing
-                  )
-                }
-                className={`${
-                  selectedListing?.id === listing.id
-                    ? "bg-blue-800 text-white ring-2 ring-white scale-110 z-20"
-                    : "bg-blue-600 hover:bg-blue-700 text-white z-10"
-                } font-bold text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-1.5 rounded-full shadow-lg cursor-pointer transition-all relative whitespace-nowrap`}
-              >
-                {formatPrice(listing.price)}
+                {/* Price Pin */}
                 <div
-                  className={`absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 ${
-                    selectedListing?.id === listing.id
-                      ? "bg-blue-800"
-                      : "bg-blue-600"
-                  } rotate-45 transition-colors group-hover:bg-blue-700`}
-                />
+                  onClick={() =>
+                    setSelectedListing(isSelected ? null : firstListing)
+                  }
+                  className={`${
+                    isSelected
+                      ? "bg-blue-800 text-white ring-2 ring-white scale-110 z-20"
+                      : "bg-blue-600 hover:bg-blue-700 text-white z-10"
+                  } font-bold text-xs px-2.5 py-1.5 rounded-full shadow-lg cursor-pointer transition-all relative whitespace-nowrap flex items-center gap-1.5`}
+                >
+                  {count > 1 ? (
+                    <>
+                      <div className="size-4 bg-white text-blue-800 rounded-full flex items-center justify-center text-[10px] font-black">
+                        {count}
+                      </div>
+                      <span>Phòng ở đây</span>
+                    </>
+                  ) : (
+                    formatPrice(firstListing.price)
+                  )}
+                  <div
+                    className={`absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 ${
+                      isSelected ? "bg-blue-800" : "bg-blue-600"
+                    } rotate-45 transition-colors group-hover:bg-blue-700`}
+                  />
+                </div>
               </div>
-
-            </div>
-          </OverlayView>
-        ))}
+            </OverlayView>
+          );
+        })}
       </GoogleMap>
 
       <style jsx global>{`
