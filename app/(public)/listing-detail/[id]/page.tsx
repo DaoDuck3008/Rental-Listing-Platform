@@ -2,7 +2,7 @@
 
 import ListingBreadcrumb from "@/components/listing/listingBreadCrumb";
 import ListingGallery from "@/components/listing/listingGallery";
-import RecommendedListings from "@/components/listing/recommendedListings";
+import RelatedListings from "@/components/listing/relatedListings";
 import { getListingDetail } from "@/services/listing.api";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -46,6 +46,11 @@ export default function ListingDetailPage() {
   });
 
   const { ref: commentsRef, inView: commentsInView } = useInView({
+    triggerOnce: true,
+    rootMargin: "200px 0px",
+  });
+
+  const { ref: relatedRef, inView: relatedInView } = useInView({
     triggerOnce: true,
     rootMargin: "200px 0px",
   });
@@ -310,8 +315,14 @@ export default function ListingDetailPage() {
         </div>
       </div>
 
-      {/* Recommended Listings */}
-      <RecommendedListings />
+      {/* Related Listings */}
+      <div ref={relatedRef}>
+        {relatedInView ? (
+          <RelatedListings listingId={listing.id} />
+        ) : (
+          <div className="h-40" />
+        )}
+      </div>
 
       {/* Comments */}
       <div ref={commentsRef}>
