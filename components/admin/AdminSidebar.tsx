@@ -84,7 +84,7 @@ export default function AdminSidebar({ onClose }: { onClose?: () => void }) {
       icon: <Layers size={18} />,
       href: "/admin/listing-types",
     },
-    { label: "Vai trò", icon: <Users size={18} />, href: "/admin/roles" },
+    { label: "Quyền hạn", icon: <ShieldCheck size={18} />, href: "/admin/roles" },
     { label: "Người dùng", icon: <User size={18} />, href: "/admin/users" },
     {
       label: "Địa điểm nổi bật",
