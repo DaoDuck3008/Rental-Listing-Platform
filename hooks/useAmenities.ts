@@ -6,13 +6,13 @@ export const useAmenities = () => {
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
     revalidateIfStale: false,
-    dedupingInterval: 60000, // 1 minute
+    dedupingInterval: 60000, 
 
     shouldRetryOnError: false,
   });
 
   return {
-    amenities: data,
+    amenities: data?.data,
     isLoading,
     isError: error,
   };

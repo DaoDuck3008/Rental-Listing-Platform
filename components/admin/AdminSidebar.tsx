@@ -80,14 +80,14 @@ export default function AdminSidebar({ onClose }: { onClose?: () => void }) {
       href: "/admin/amenities",
     },
     {
-      label: "Listing Type",
+      label: "Loại bài đăng",
       icon: <Layers size={18} />,
       href: "/admin/listing-types",
     },
-    { label: "Role", icon: <Users size={18} />, href: "/admin/roles" },
-    { label: "User", icon: <User size={18} />, href: "/admin/users" },
+    { label: "Vai trò", icon: <Users size={18} />, href: "/admin/roles" },
+    { label: "Người dùng", icon: <User size={18} />, href: "/admin/users" },
     {
-      label: "Destinations",
+      label: "Địa điểm nổi bật",
       icon: <LandPlot size={18} />,
       href: "/admin/destinations",
     },
