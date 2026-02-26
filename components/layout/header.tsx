@@ -23,10 +23,12 @@ import { useFavorites } from "@/hooks/useFavorites";
 import { logout } from "@/services/auth.api";
 import { toast } from "react-toastify";
 import ModalPortal from "../ui/modalPortal";
+import { usePathname } from "next/navigation";
 
 export default function AppHeader() {
   const user = useAuthStore((s) => s.user);
   const clearAuth = useAuthStore((s) => s.clearAuth);
+  const pathname = usePathname();
   const [isFavoriteOpen, setIsFavoriteOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { favoriteIds } = useFavorites();
@@ -86,7 +88,7 @@ export default function AppHeader() {
 
             {!user ? (
               <Link
-                href="/login"
+                href={`/login?redirect=${pathname}`}
                 className="flex items-center justify-center rounded-lg h-10 px-4 bg-slate-200 hover:bg-slate-300 text-slate-900 text-sm font-bold transition-colors"
               >
                 Đăng nhập
@@ -213,7 +215,7 @@ export default function AppHeader() {
             <div className="pt-4 space-y-3">
               {!user ? (
                 <Link
-                  href="/login"
+                  href={`/login?redirect=${pathname}`}
                   onClick={() => setIsMenuOpen(false)}
                   className="flex items-center justify-center w-full h-14 bg-primary text-white font-black rounded-2xl shadow-xl shadow-primary/20 transition-all uppercase tracking-widest text-sm"
                 >

@@ -38,10 +38,6 @@ export default function LoginPage() {
       if (result.status === 200) {
         toast.success("Đăng nhập thành công!");
         router.replace(redirect);
-
-        setTimeout(() => {
-          window.location.reload();
-        }, 1000);
         return;
       }
     } catch (error: any) {

@@ -17,7 +17,7 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import GoogleLoginButton from "@/components/auth/googleBtn";
 
 interface FormState {
@@ -31,6 +31,8 @@ interface FormState {
 
 export default function RegisterPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect") || "/";
 
   const [visiblePassword, setVisiblePassword] = useState<boolean>(false);
   const [visibleConfirmPassword, setVisibleConfirmPassword] =
@@ -87,7 +89,7 @@ export default function RegisterPage() {
       const result = await register(form);
       if (result.status === 201) {
         toast.success("Đăng kí tài khoản thành công!");
-        router.push("/login");
+        router.push(`/login?redirect=${encodeURIComponent(redirect)}`);
         return;
       }
     } catch (error: any) {
@@ -379,7 +381,7 @@ export default function RegisterPage() {
               Đã có tài khoản?
               <Link
                 className="text-primary hover:text-blue-600 font-bold ml-1 transition-colors"
-                href="/login"
+                href={`/login?redirect=${encodeURIComponent(redirect)}`}
               >
                 Đăng nhập
               </Link>

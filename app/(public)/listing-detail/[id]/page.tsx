@@ -69,7 +69,6 @@ export default function ListingDetailPage() {
           return;
         }
 
-        console.error("Error fetching listing detail:", error);
         toast.error("Đã có lỗi xảy ra");
       } finally {
         setIsLoading(false);
