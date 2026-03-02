@@ -387,7 +387,9 @@ export const getRelatedListings = async (listingId) => {
       return JSON.parse(cachedData);
     }
   } catch (error) {
-    console.error(new RedisError("Lỗi lấy cache bài đăng liên quan: " + error.message));
+    console.error(
+      new RedisError("Lỗi lấy cache bài đăng liên quan: " + error.message)
+    );
   }
 
   try {
@@ -446,10 +448,7 @@ export const getRelatedListings = async (listingId) => {
         id: { [Op.ne]: listingId },
         status: "PUBLISHED",
         [Op.and]: [
-          where(
-            fn("ST_DWithin", col("location"), point, 50000), 
-            true
-          ),
+          where(fn("ST_DWithin", col("location"), point, 50000), true),
         ],
       },
 
@@ -459,13 +458,15 @@ export const getRelatedListings = async (listingId) => {
       ],
 
       limit: 6,
-      distinct: true, 
+      distinct: true,
     });
 
     try {
-      await redis.set(cacheKey, JSON.stringify(related), "EX", 600); 
+      await redis.set(cacheKey, JSON.stringify(related), "EX", 600);
     } catch (error) {
-      console.error(new RedisError("Lỗi lưu cache bài đăng liên quan: " + error.message));
+      console.error(
+        new RedisError("Lỗi lưu cache bài đăng liên quan: " + error.message)
+      );
     }
 
     return related;

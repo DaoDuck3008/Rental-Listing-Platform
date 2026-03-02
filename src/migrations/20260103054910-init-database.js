@@ -500,37 +500,24 @@ module.exports = {
         primaryKey: true,
         defaultValue: Sequelize.literal("gen_random_uuid()"),
       },
-      listingId: {
+      owner_id: {
         type: Sequelize.UUID,
         allowNull: false,
-        field: "listing_id",
-        references: {
-          model: "listings",
-          key: "id",
-        },
-        onDelete: "RESTRICT",
-        onUpdate: "CASCADE",
-      },
-      tenantId: {
-        type: Sequelize.UUID,
-        allowNull: true,
-        field: "tenant_id",
         references: {
           model: "users",
           key: "id",
         },
-        onDelete: "SET NULL",
+        onDelete: "CASCADE",
         onUpdate: "CASCADE",
       },
-      ownerId: {
+      tenant_id: {
         type: Sequelize.UUID,
-        allowNull: true,
-        field: "owner_id",
+        allowNull: false,
         references: {
           model: "users",
           key: "id",
         },
-        onDelete: "SET NULL",
+        onDelete: "CASCADE",
         onUpdate: "CASCADE",
       },
       createdAt: {
@@ -552,10 +539,9 @@ module.exports = {
         primaryKey: true,
         defaultValue: Sequelize.literal("gen_random_uuid()"),
       },
-      chatId: {
+      chat_id: {
         type: Sequelize.UUID,
         allowNull: false,
-        field: "chat_id",
         references: {
           model: "chats",
           key: "id",
@@ -563,25 +549,29 @@ module.exports = {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       },
-      senderId: {
+      sender_id: {
         type: Sequelize.UUID,
-        allowNull: true,
-        field: "sender_id",
+        allowNull: false,
         references: {
           model: "users",
           key: "id",
         },
-        onDelete: "SET NULL",
+        onDelete: "CASCADE",
         onUpdate: "CASCADE",
       },
       content: {
         type: Sequelize.TEXT,
         allowNull: false,
       },
-      messageType: {
-        type: Sequelize.STRING(20),
+      message_type: {
+        type: Sequelize.ENUM("text", "image", "file"),
+        allowNull: false,
         defaultValue: "text",
-        field: "message_type",
+      },
+      is_read: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
       },
       createdAt: {
         type: Sequelize.DATE,
@@ -836,10 +826,15 @@ module.exports = {
     await queryInterface.addIndex("comment_likes", ["user_id"]);
 
     // Chats indexes
-    await queryInterface.addIndex("chats", ["listing_id"]);
     await queryInterface.addIndex("chats", ["tenant_id"]);
     await queryInterface.addIndex("chats", ["owner_id"]);
     await queryInterface.addIndex("chats", ["updated_at"]);
+    // Unique constraint for tenant_id and owner_id to prevent duplicate chats
+    await queryInterface.addConstraint("chats", {
+      fields: ["tenant_id", "owner_id"],
+      type: "unique",
+      name: "uq_chats_participants",
+    });
 
     // Messages indexes
     await queryInterface.addIndex("messages", ["chat_id"]);
