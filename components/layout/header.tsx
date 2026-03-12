@@ -24,6 +24,7 @@ import { logout } from "@/services/auth.api";
 import { toast } from "react-toastify";
 import ModalPortal from "../ui/modalPortal";
 import { usePathname } from "next/navigation";
+import NotificationBell from "./notificationBell";
 
 export default function AppHeader() {
   const user = useAuthStore((s) => s.user);
@@ -86,6 +87,8 @@ export default function AppHeader() {
               </button>
             )}
 
+            {user && <NotificationBell />}
+
             {!user ? (
               <Link
                 href={`/login?redirect=${pathname}`}
@@ -120,6 +123,8 @@ export default function AppHeader() {
               )}
             </button>
           )}
+
+          {user && <NotificationBell />}
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className="p-2 text-slate-900 transition-colors hover:bg-slate-100 rounded-lg"

@@ -144,8 +144,12 @@ export default function UserSidebar({ onClose }: { onClose: () => void }) {
               </span>
             </Link>
             <Link
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-text-secondary hover:bg-slate-100 transition-colors group"
-              href="#"
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl ${
+                currentRoute.startsWith("/profile/notifications")
+                  ? "bg-blue-500 text-white shadow-md"
+                  : "text-text-secondary hover:bg-slate-100"
+              }   shadow-blue-500/20 group transition-all`}
+              href="/profile/notifications"
             >
               <span className="material-symbols-outlined group-hover:text-blue-500 transition-colors">
                 <Bell />

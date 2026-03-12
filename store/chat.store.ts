@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { io, Socket } from "socket.io-client";
+import { useNotificationStore } from "./notification.store";
 
 interface Message {
   id: string;
@@ -86,6 +87,18 @@ export const useChatStore = create<ChatState>((set, get) => ({
     socket.on("message_deleted", (data: { chatId: string; messageId: string }) => {
       get().removeMessageLocally(data.chatId, data.messageId);
     });
+
+    // --- NOTIFICATION LISTENERS ---
+    socket.on("new_notification", (notification: any) => {
+      console.log("[Socket] Received new_notification:", notification);
+      useNotificationStore.getState().addNotification(notification);
+    });
+
+    socket.on("all_notifications_read", () => {
+      useNotificationStore.getState().fetchUnreadCount();
+      useNotificationStore.getState().fetchNotifications();
+    });
+    // ----------------------------
 
     set({ socket });
   },
