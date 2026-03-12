@@ -1,9 +1,11 @@
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
-import { Edit2, MoreVertical, ThumbsUp, Trash2 } from "lucide-react";
+import { Edit2, MessageCircle, MoreVertical, ThumbsUp, Trash2, ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import WarningModal from "../ui/warningModal";
 import DescriptionEditor from "./descriptionEditor";
+import { getCommentReplies } from "@/services/comment.api";
+import SkeletonLoader from "./skeletonLoader";
 
 interface CommentCardProps {
   comment: {
@@ -16,6 +18,7 @@ interface CommentCardProps {
       full_name: string;
       avatar?: string;
     };
+    replies_count?: number;
     replies?: any[];
     isLiked?: boolean;
   };
@@ -36,10 +39,13 @@ export default function CommentCard({
   onLike,
   isReply = false,
 }: CommentCardProps) {
-  const { user, content, created_at, id, user_id, replies, like_count = 0, isLiked } = comment;
+  const { user, content: initialContent, created_at, id, user_id, replies, like_count = 0, isLiked: initialIsLiked } = comment;
   const isOwner = currentUser?.id === user_id;
   const [isEditing, setIsEditing] = useState(false);
-  const [editContent, setEditContent] = useState(content);
+  const [currentContent, setCurrentContent] = useState(initialContent);
+  const [editContent, setEditContent] = useState(initialContent);
+  const [isLiked, setIsLiked] = useState(initialIsLiked);
+  const [currentLikeCount, setCurrentLikeCount] = useState(like_count);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   
@@ -48,14 +54,50 @@ export default function CommentCard({
   const [replyContent, setReplyContent] = useState("");
   const [isSubmittingReply, setIsSubmittingReply] = useState(false);
 
+  // States for lazy loading replies
+  const [showReplies, setShowReplies] = useState(false);
+  const [repliesData, setRepliesData] = useState<any[]>(replies || []);
+  const [isLoadingReplies, setIsLoadingReplies] = useState(false);
+  const [repliesCount, setRepliesCount] = useState(comment.replies_count || 0);
+
+  const loadReplies = async (force = false) => {
+    if (!force && repliesData.length > 0 && repliesData.length >= repliesCount) {
+      return;
+    }
+
+    setIsLoadingReplies(true);
+    try {
+      const res = await getCommentReplies(id);
+      if (res.success) {
+        setRepliesData(res.data);
+        setRepliesCount(res.total || res.data.length);
+      }
+    } catch (error) {
+      console.error("Error fetching replies:", error);
+    } finally {
+      setIsLoadingReplies(false);
+    }
+  };
+
+  const toggleReplies = async () => {
+    if (showReplies) {
+      setShowReplies(false);
+    } else {
+      setShowReplies(true);
+      loadReplies();
+    }
+  };
+
   const handleUpdate = async () => {
-    if (!editContent.trim() || editContent === content) {
+    if (!editContent.trim() || editContent === currentContent) {
       setIsEditing(false);
       return;
     }
     setIsSubmitting(true);
     try {
       if (onUpdate) await onUpdate(id, editContent);
+      // Update local state if successful
+      setCurrentContent(editContent);
       setIsEditing(false);
     } catch (error) {
       console.error(error);
@@ -71,6 +113,10 @@ export default function CommentCard({
       if (onReply) await onReply(id, replyContent);
       setReplyContent("");
       setIsReplying(false);
+      
+      setRepliesCount(prev => prev + 1);
+      setShowReplies(true);
+      await loadReplies(true);
     } catch (error) {
       console.error(error);
     } finally {
@@ -163,7 +209,7 @@ export default function CommentCard({
                   <button
                     onClick={() => {
                       setIsEditing(false);
-                      setEditContent(content);
+                      setEditContent(currentContent);
                     }}
                     className="text-sm font-bold text-slate-500 hover:text-slate-700 px-4 py-2 rounded-lg"
                     disabled={isSubmitting}
@@ -182,26 +228,45 @@ export default function CommentCard({
             ) : (
               <div
                 className={`text-slate-700 leading-relaxed prose prose-slate max-w-none ${isReply ? "text-sm" : "text-sm sm:text-base"}`}
-                dangerouslySetInnerHTML={{ __html: content }}
+                dangerouslySetInnerHTML={{ __html: currentContent }}
               ></div>
             )}
           </div>
           {!isEditing && (
             <div className="flex gap-4 mt-2 ml-2">
               <button
-                onClick={() => onLike && onLike(id)}
+                onClick={async () => {
+                  if (onLike) {
+                    await onLike(id);
+                    // Optimistic update
+                    const newLiked = !isLiked;
+                    setIsLiked(newLiked);
+                    setCurrentLikeCount(prev => newLiked ? prev + 1 : Math.max(0, prev - 1));
+                  }
+                }}
                 className={`text-xs font-bold transition-colors flex items-center gap-1.5 px-2 py-1 rounded hover:bg-slate-100 ${isLiked ? "text-primary bg-blue-50" : "text-slate-500 hover:text-primary"}`}
               >
                 <ThumbsUp size={14} fill={isLiked ? "currentColor" : "none"} />
-                {like_count} Hữu ích
+                {currentLikeCount} Hữu ích
               </button>
               {!isReply && (
-                <button 
-                  onClick={() => setIsReplying(!isReplying)}
-                  className={`text-xs font-bold transition-colors px-2 py-1 rounded hover:bg-slate-100 ${isReplying ? "text-primary bg-slate-100" : "text-slate-500 hover:text-primary"}`}
-                >
-                  {isReplying ? "Hủy trả lời" : "Trả lời"}
-                </button>
+                <>
+                  <button 
+                    onClick={() => setIsReplying(!isReplying)}
+                    className={`text-xs font-bold transition-colors px-2 py-1 rounded hover:bg-slate-100 ${isReplying ? "text-primary bg-slate-100" : "text-slate-500 hover:text-primary"}`}
+                  >
+                    {isReplying ? "Hủy trả lời" : "Trả lời"}
+                  </button>
+                  {repliesCount > 0 && (
+                    <button 
+                      onClick={toggleReplies}
+                      className="text-xs font-bold text-primary hover:bg-blue-50 px-2 py-1 rounded transition-colors flex items-center gap-1"
+                    >
+                      {showReplies ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+                      {repliesCount} phản hồi
+                    </button>
+                  )}
+                </>
               )}
             </div>
           )}
@@ -230,19 +295,32 @@ export default function CommentCard({
           )}
 
           {/* Sub Replies List */}
-          {replies && replies.length > 0 && (
+          {showReplies && (
             <div className="flex flex-col">
-              {replies.map((reply) => (
-                <CommentCard
-                  key={reply.id}
-                  comment={reply}
-                  currentUser={currentUser}
-                  onUpdate={onUpdate}
-                  onDelete={onDelete}
-                  onLike={onLike}
-                  isReply={true}
-                />
-              ))}
+              {isLoadingReplies ? (
+                <div className="ml-12 mt-4">
+                  <SkeletonLoader type="comment" count={Math.min(repliesCount, 3)} />
+                </div>
+              ) : (
+                repliesData.map((reply) => (
+                  <CommentCard
+                    key={reply.id}
+                    comment={reply}
+                    currentUser={currentUser}
+                    onUpdate={async (id, content) => {
+                      if (onUpdate) await onUpdate(id, content);
+                      await loadReplies(true);
+                    }}
+                    onDelete={async (id) => {
+                      if (onDelete) await onDelete(id);
+                      setRepliesCount((prev) => Math.max(0, prev - 1));
+                      await loadReplies(true);
+                    }}
+                    onLike={onLike}
+                    isReply={true}
+                  />
+                ))
+              )}
             </div>
           )}
         </div>

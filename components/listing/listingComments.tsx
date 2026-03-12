@@ -83,7 +83,7 @@ export default function ListingComments({
             if (c.id === parentId) {
               return {
                 ...c,
-                replies: [...(c.replies || []), res.data],
+                replies_count: (c.replies_count || 0) + 1,
               };
             }
             return c;

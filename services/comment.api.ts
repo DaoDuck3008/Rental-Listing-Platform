@@ -25,3 +25,10 @@ export const toggleLikeComment = async (commentId: string) => {
   const response = await api.post(`/api/comments/${commentId}/likes`);
   return response.data;
 };
+
+export const getCommentReplies = async (commentId: string, page = 1, limit = 10) => {
+  const response = await api.get(`/api/comments/${commentId}/replies`, {
+    params: { page, limit },
+  });
+  return response.data;
+};
