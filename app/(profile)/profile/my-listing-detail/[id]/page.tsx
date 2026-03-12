@@ -23,6 +23,7 @@ import {
   getVietnameseStatus,
   getStatusStyle,
   formatVietnameseDate,
+  handleError,
 } from "@/utils";
 import LoadingOverlay from "@/components/common/loadingOverlay";
 import Icon from "@/components/ui/icon";
@@ -47,14 +48,7 @@ export default function MyListingDetailPage() {
           setListing(res.data);
         }
       } catch (error: any) {
-        const res = error.response.data;
-        if (res.error === "NOT_FOUND") {
-          toast.error("Không tìm thấy thông tin bài viết");
-          return;
-        }
-
-        console.error("Error fetching listing detail:", error);
-        toast.error("Không thể tải thông tin bài đăng");
+        handleError(error, "Không thể tải thông tin bài đăng");
       } finally {
         setIsLoading(false);
       }
@@ -77,22 +71,7 @@ export default function MyListingDetailPage() {
       }
       return;
     } catch (error: any) {
-      const res = error.response.data;
-      switch (res.error) {
-        case "NOT_FOUND":
-          toast.error(res.message);
-          break;
-        case "UNAUTHORIZED":
-          toast.error(res.message);
-          break;
-        case "BUSINESS_RULE_VALIDATION":
-          toast.error(res.message);
-          break;
-        default:
-          toast.error(res.message ?? "Lỗi không xác định.");
-          console.error(error);
-          break;
-      }
+      handleError(error);
       return;
     }
   };

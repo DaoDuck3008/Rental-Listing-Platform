@@ -14,6 +14,7 @@ import {
 } from "@/services/comment.api";
 import { toast } from "react-toastify";
 import SkeletonLoader from "../common/skeletonLoader";
+import { handleError } from "@/utils";
 
 
 interface ListingCommentsProps {
@@ -40,7 +41,7 @@ export default function ListingComments({
           setLocalComments(res.data || []);
         }
       } catch (error) {
-        console.error("Error fetching comments:", error);
+        handleError(error, "Error fetching comments");
       } finally {
         setIsLoading(false);
       }
@@ -64,8 +65,7 @@ export default function ListingComments({
         toast.success("Đã gửi bình luận!");
       }
     } catch (error: any) {
-      console.error(error);
-      toast.error(error.response?.data?.message || "Không thể gửi bình luận.");
+      handleError(error, "Không thể gửi bình luận.");
     } finally {
       setIsSubmitting(false);
     }
@@ -92,8 +92,7 @@ export default function ListingComments({
         toast.success("Đã trả lời bình luận!");
       }
     } catch (error: any) {
-      console.error(error);
-      toast.error(error.response?.data?.message || "Không thể gửi phản hồi.");
+      handleError(error, "Không thể gửi phản hồi.");
     }
   };
 
@@ -116,10 +115,7 @@ export default function ListingComments({
         toast.success("Đã cập nhật bình luận!");
       }
     } catch (error: any) {
-      console.error(error);
-      toast.error(
-        error.response?.data?.message || "Không thể cập nhật bình luận."
-      );
+      handleError(error, "Không thể cập nhật bình luận.");
     }
   };
 
@@ -159,10 +155,7 @@ export default function ListingComments({
         );
       }
     } catch (error: any) {
-      console.error(error);
-      toast.error(
-        error.response?.data?.message || "Không thể thực hiện hành động."
-      );
+      handleError(error, "Không thể thực hiện hành động.");
     }
   };
 
@@ -181,8 +174,7 @@ export default function ListingComments({
         toast.success("Đã xóa bình luận!");
       }
     } catch (error: any) {
-      console.error(error);
-      toast.error(error.response?.data?.message || "Không thể xóa bình luận.");
+      handleError(error, "Không thể xóa bình luận.");
     }
   };
 

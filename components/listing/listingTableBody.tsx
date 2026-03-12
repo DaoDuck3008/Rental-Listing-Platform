@@ -14,6 +14,7 @@ import {
   getVietnameseStatus,
   getStatusStyle,
   formatViews,
+  handleError,
 } from "@/utils";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -77,14 +78,7 @@ export default function ListingTableBody({
         return;
       }
     } catch (error: any) {
-      const res = error.response.data;
-      if (!res) {
-        toast.error("Đã có lỗi xảy ra. Vui lòng thử lại sau");
-        return;
-      }
-
-      toast.error(res.message);
-      return;
+      handleError(error, "Đã có lỗi xảy ra. Vui lòng thử lại sau");
     }
   };
 
@@ -106,14 +100,7 @@ export default function ListingTableBody({
         return;
       }
     } catch (error: any) {
-      const res = error.response.data;
-      if (!res) {
-        toast.error("Đã có lỗi xảy ra. Vui lòng thử lại sau");
-        return;
-      }
-
-      toast.error(res.message);
-      return;
+      handleError(error, "Đã có lỗi xảy ra. Vui lòng thử lại sau");
     }
   };
 
@@ -135,16 +122,8 @@ export default function ListingTableBody({
         return;
       }
     } catch (error: any) {
-      const res = error.response?.data;
-      if (!res) {
-        toast.error("Đã có lỗi xảy ra. Vui lòng thử lại sau");
-        setIsLoading(false);
-        return;
-      }
-
-      toast.error(res.message);
+      handleError(error, "Đã có lỗi xảy ra. Vui lòng thử lại sau");
       setIsLoading(false);
-      return;
     }
   };
 
@@ -163,23 +142,7 @@ export default function ListingTableBody({
       }
       return;
     } catch (error: any) {
-      const res = error.response.data;
-      switch (res.error) {
-        case "NOT_FOUND":
-          toast.error(res.message);
-          break;
-        case "UNAUTHORIZED":
-          toast.error(res.message);
-          break;
-        case "BUSINESS_RULE_VALIDATION":
-          toast.error(res.message);
-          break;
-        default:
-          toast.error(res.message ?? "Lỗi không xác định.");
-          console.error(error);
-          break;
-      }
-      return;
+      handleError(error);
     }
   };
 

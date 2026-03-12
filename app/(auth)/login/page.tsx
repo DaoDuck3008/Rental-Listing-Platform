@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuthStore } from "@/store/auth.store";
 import GoogleLoginButton from "@/components/auth/googleBtn";
+import { handleError } from "@/utils";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -41,13 +42,7 @@ export default function LoginPage() {
         return;
       }
     } catch (error: any) {
-      const res = error.response.data;
-      if ((res.error = "UNAUTHORIZED")) {
-        toast.warning(res.message);
-      } else {
-        toast.error("Đăng nhập thất bại");
-        console.error("Login error: ", error);
-      }
+      handleError(error, "Đăng nhập thất bại");
       return;
     }
   };

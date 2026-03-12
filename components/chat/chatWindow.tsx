@@ -24,6 +24,7 @@ import { useAuthStore } from "@/store/auth.store";
 import Avatar from "@/components/common/avatar";
 import WarningModal from "@/components/ui/warningModal";
 import clsx from "clsx";
+import { handleError } from "@/utils";
 
 interface ChatWindowProps {
   chat: any;
@@ -60,7 +61,7 @@ export default function ChatWindow({ chat, isCollapsed }: ChatWindowProps) {
           setChatMessages(chat.id, res.data.reverse());
         }
       } catch (error) {
-        console.error("Failed to fetch messages", error);
+        handleError(error, "Failed to fetch messages");
       }
     };
 
@@ -87,7 +88,7 @@ export default function ChatWindow({ chat, isCollapsed }: ChatWindowProps) {
         await markAsRead(msg.id);
         markMessageAsReadLocally(chat.id, msg.id);
       } catch (error) {
-        console.error("Failed to mark message as read", error);
+        handleError(error, "Failed to mark message as read");
       }
     });
   }, [messages, isCollapsed, user?.id, chat.id, markMessageAsReadLocally]);
@@ -101,7 +102,7 @@ export default function ChatWindow({ chat, isCollapsed }: ChatWindowProps) {
         setInputValue("");
       }
     } catch (error) {
-      console.error("Failed to send message", error);
+      handleError(error, "Failed to send message");
     }
   };
 
@@ -114,7 +115,7 @@ export default function ChatWindow({ chat, isCollapsed }: ChatWindowProps) {
         setEditValue("");
       }
     } catch (error) {
-      console.error("Failed to update message", error);
+      handleError(error, "Failed to update message");
     }
   };
 
@@ -130,7 +131,7 @@ export default function ChatWindow({ chat, isCollapsed }: ChatWindowProps) {
       setIsDeleteModalOpen(false);
       setMsgToDeleteId(null);
     } catch (error) {
-      console.error("Failed to delete message", error);
+      handleError(error, "Failed to delete message");
     }
   };
 

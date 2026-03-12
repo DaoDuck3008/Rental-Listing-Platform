@@ -17,6 +17,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useListingTypes } from "@/hooks/useListingTypes";
+import { handleError } from "@/utils";
 
 interface Listing {
   id: string;
@@ -87,14 +88,7 @@ export default function ListingManagementPage() {
       setListings(data);
       setPagination(pagination);
     } catch (error: any) {
-      const res = error.response?.data;
-      if (!res) {
-        console.error(error);
-        toast.error("Lỗi không xác định. Vui lòng thử lại sau");
-        return;
-      }
-      toast.error(res.message || "Đã có lỗi xảy ra");
-      return;
+      handleError(error, "Lỗi không xác định. Vui lòng thử lại sau");
     } finally {
     }
   };

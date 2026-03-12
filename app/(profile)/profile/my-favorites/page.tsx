@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
+import { handleError } from "@/utils";
 
 interface Listing {
   id: string;
@@ -63,8 +64,7 @@ export default function MyFavoritesPage() {
       setListings(listingData);
       setPagination(pagination);
     } catch (error: any) {
-      console.error(error);
-      toast.error("Không thể tải danh sách yêu thích");
+      handleError(error, "Không thể tải danh sách yêu thích");
     } finally {
       setLoading(false);
     }
@@ -76,7 +76,7 @@ export default function MyFavoritesPage() {
       toast.info("Đã xóa khỏi danh sách yêu thích");
       fetchFavorites();
     } catch (error: any) {
-      toast.error("Có lỗi xảy ra khi cập nhật yêu thích");
+      handleError(error, "Có lỗi xảy ra khi cập nhật yêu thích");
     }
   };
 

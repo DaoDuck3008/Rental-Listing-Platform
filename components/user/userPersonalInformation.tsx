@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { handleError } from "@/utils";
 
 interface UserPersonalInformationProps {
   role: string;
@@ -47,17 +48,7 @@ export default function UserPersonalInformation() {
 
         setUser(result.data.user);
       } catch (error: any) {
-        const res = error.response.data;
-        switch (res) {
-          case "Unauthorized":
-            toast.error(res.message);
-            return;
-
-          default:
-            toast.error("Đã có lỗi xảy ra, vui lòng thử lại sau!");
-            console.error(error);
-            return;
-        }
+        handleError(error, "Đã có lỗi xảy ra, vui lòng thử lại sau!");
       }
     };
 

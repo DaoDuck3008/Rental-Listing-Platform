@@ -19,6 +19,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import { useRouter, useSearchParams } from "next/navigation";
 import GoogleLoginButton from "@/components/auth/googleBtn";
+import { handleError } from "@/utils";
 
 interface FormState {
   full_name: string;
@@ -93,21 +94,7 @@ export default function RegisterPage() {
         return;
       }
     } catch (error: any) {
-      const res = error.response.data;
-      switch (res.error) {
-        case "VALIDATION_ERROR":
-          res.errors.forEach((err: { field: string; message: string }) => {
-            toast.error(err.message);
-          });
-          break;
-        case "CONFLICT_ERROR":
-          toast.error(res.message);
-          break;
-        default:
-          toast.error("Có lỗi xảy ra!");
-          console.error("Register error: ", error);
-          break;
-      }
+      handleError(error, "Có lỗi xảy ra!");
       return;
     }
   };

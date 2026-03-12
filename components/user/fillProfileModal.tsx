@@ -12,6 +12,7 @@ import { useEffect, useState } from "react";
 import Dropzone from "../common/dropzone";
 import { toast } from "react-toastify";
 import { updateUserProfile } from "@/services/user.api";
+import { handleError } from "@/utils";
 
 interface UserProfileProps {
   avatar?: string;
@@ -71,21 +72,7 @@ export default function FillProfileModal({
         return;
       }
     } catch (error: any) {
-      const res = error.response.data;
-      switch (res.error) {
-        case "VALIDATION_ERROR":
-          res.errors.forEach((err: { field: string; message: string }) => {
-            toast.error(err.message);
-          });
-          break;
-        case "NOT_FOUND":
-          toast.error(res.message);
-          break;
-        default:
-          toast.error("Đã có lỗi xảy ra. Vui lòng thử lại.");
-          console.error("Update profile error: ", error);
-          break;
-      }
+      handleError(error, "Đã có lỗi xảy ra. Vui lòng thử lại.");
       setIsLoading(false);
       return;
     }

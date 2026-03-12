@@ -22,3 +22,4 @@ export {
 } from "./constants";
 // Helpers
 export { cn } from "./cn";
+export { handleError } from "./error-handler";
