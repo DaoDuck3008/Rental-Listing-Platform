@@ -3,6 +3,7 @@ import { optionalProtect, protect } from "../middlewares/auth.middleware.js";
 import {
   create,
   destroy,
+  getReplies,
   index,
   like,
   update,
@@ -11,6 +12,7 @@ import {
 const router = express.Router();
 
 router.get("/listings/:id", optionalProtect, index);
+router.get("/:id/replies", optionalProtect, getReplies);
 
 router.use(protect);
 

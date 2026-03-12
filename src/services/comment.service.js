@@ -49,6 +49,12 @@ export const getListingComment = async (
         "created_at",
         "updated_at",
         isLikedLiteral,
+        [
+          sequelize.literal(
+            '(SELECT COUNT(*) FROM "comments" WHERE "comments"."parent_id" = "Comment"."id" AND "comments"."deleted_at" IS NULL)'
+          ),
+          "replies_count",
+        ],
       ],
       include: [
         {
@@ -56,34 +62,8 @@ export const getListingComment = async (
           as: "user",
           attributes: ["id", "full_name", "avatar"],
         },
-        {
-          model: Comment,
-          as: "replies",
-          where: { deleted_at: null },
-          required: false,
-          attributes: [
-            "id",
-            "user_id",
-            "parent_id",
-            "content",
-            "like_count",
-            "created_at",
-            "updated_at",
-            isLikedLiteralReply,
-          ],
-          include: [
-            {
-              model: User,
-              as: "user",
-              attributes: ["id", "full_name", "avatar"],
-            },
-          ],
-        },
       ],
-      order: [
-        ["created_at", "DESC"],
-        [{ model: Comment, as: "replies" }, "created_at", "ASC"],
-      ],
+      order: [["created_at", "DESC"]],
       limit,
       offset,
       distinct: true,
@@ -97,6 +77,61 @@ export const getListingComment = async (
 
     console.error("Lỗi không xác định khi lấy comments cho listing:", error);
     throw new DatabaseError("Lỗi không xác định khi lấy comments cho listing.");
+  }
+};
+
+export const getCommentReplies = async (
+  parentId,
+  limit = 10,
+  page = 1,
+  currentUserId = null
+) => {
+  try {
+    const offset = (page - 1) * limit;
+
+    const isLikedLiteral = currentUserId
+      ? [
+          sequelize.literal(
+            `EXISTS(SELECT 1 FROM "comment_likes" WHERE "comment_likes"."comment_id" = "Comment"."id" AND "comment_likes"."user_id" = '${currentUserId}')`
+          ),
+          "isLiked",
+        ]
+      : [sequelize.literal("false"), "isLiked"];
+
+    const result = await Comment.findAndCountAll({
+      where: {
+        parent_id: parentId,
+        deleted_at: null,
+      },
+      attributes: [
+        "id",
+        "user_id",
+        "parent_id",
+        "content",
+        "like_count",
+        "created_at",
+        "updated_at",
+        isLikedLiteral,
+      ],
+      include: [
+        {
+          model: User,
+          as: "user",
+          attributes: ["id", "full_name", "avatar"],
+        },
+      ],
+      order: [["created_at", "ASC"]],
+      limit,
+      offset,
+    });
+
+    return result;
+  } catch (error) {
+    if (error.name?.startsWith("Sequelize")) {
+      throw new DatabaseError(`Lỗi cơ sở dữ liệu: ${error.message}`);
+    }
+
+    throw new DatabaseError("Lỗi không xác định khi lấy phản hồi bình luận.");
   }
 };
 

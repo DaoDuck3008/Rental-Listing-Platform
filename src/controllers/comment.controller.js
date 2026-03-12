@@ -1,7 +1,7 @@
-import { success } from "zod";
 import {
   createComment,
   deleteComment,
+  getCommentReplies,
   getListingComment,
   toggleLike,
   updateComment,
@@ -13,6 +13,26 @@ export const index = async (req, res, next) => {
     const { limit = 10, page = 1 } = req.query;
     const result = await getListingComment(
       listingId,
+      parseInt(limit),
+      parseInt(page),
+      req.user?.id
+    );
+    res.status(200).json({
+      success: true,
+      data: result.rows,
+      total: result.count,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getReplies = async (req, res, next) => {
+  try {
+    const { id: parentId } = req.params;
+    const { limit = 10, page = 1 } = req.query;
+    const result = await getCommentReplies(
+      parentId,
       parseInt(limit),
       parseInt(page),
       req.user?.id
