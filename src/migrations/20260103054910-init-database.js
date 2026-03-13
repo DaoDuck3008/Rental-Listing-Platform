@@ -1,4 +1,3 @@
-// migrations/XXXXXX-create-initial-tables.js
 "use strict";
 
 /** @type {import('sequelize-cli').Migration} */
@@ -9,7 +8,7 @@ module.exports = {
       'CREATE EXTENSION IF NOT EXISTS "pgcrypto"'
     );
 
-    // Create roles table
+    // 1. Create roles table
     await queryInterface.createTable("roles", {
       id: {
         type: Sequelize.UUID,
@@ -25,29 +24,28 @@ module.exports = {
         type: Sequelize.STRING(100),
         allowNull: false,
       },
-      createdAt: {
+      created_at: {
         type: Sequelize.DATE,
-        field: "created_at",
-        defaultValue: Sequelize.NOW,
+        allowNull: false,
+        defaultValue: Sequelize.literal("NOW()"),
       },
-      updatedAt: {
+      updated_at: {
         type: Sequelize.DATE,
-        field: "updated_at",
-        defaultValue: Sequelize.NOW,
+        allowNull: false,
+        defaultValue: Sequelize.literal("NOW()"),
       },
     });
 
-    // Create users table
+    // 2. Create users table
     await queryInterface.createTable("users", {
       id: {
         type: Sequelize.UUID,
         primaryKey: true,
         defaultValue: Sequelize.literal("gen_random_uuid()"),
       },
-      roleId: {
+      role_id: {
         type: Sequelize.UUID,
         allowNull: false,
-        field: "role_id",
         references: {
           model: "roles",
           key: "id",
@@ -60,55 +58,54 @@ module.exports = {
         allowNull: false,
         unique: true,
       },
-      passwordHash: {
-        type: Sequelize.TEXT,
-        allowNull: false,
-        field: "password_hash",
-      },
       phone_number: {
         type: Sequelize.STRING(11),
-        allowNull: false,
-        field: "phone_number",
+        allowNull: true,
+      },
+      password_hash: {
+        type: Sequelize.STRING,
+        allowNull: true,
       },
       full_name: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING,
         allowNull: false,
-        field: "full_name",
       },
       gender: {
         type: Sequelize.STRING(10),
-        allowNull: false,
+        allowNull: true,
+        defaultValue: "Male",
       },
       avatar: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING,
         allowNull: true,
       },
       status: {
         type: Sequelize.STRING(20),
-        allowNull: false,
-      },
-      createdAt: {
-        type: Sequelize.DATE,
-        field: "created_at",
-        defaultValue: Sequelize.NOW,
-      },
-      updatedAt: {
-        type: Sequelize.DATE,
-        field: "updated_at",
-        defaultValue: Sequelize.NOW,
+        allowNull: true,
+        defaultValue: "Active",
       },
       provider: {
         type: Sequelize.STRING(20),
         allowNull: true,
+        defaultValue: "Local",
       },
       provider_user_id: {
-        type: Sequelize.STRING(100),
+        type: Sequelize.STRING,
         allowNull: true,
-        field: "provider_user_id",
+      },
+      created_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal("NOW()"),
+      },
+      updated_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal("NOW()"),
       },
     });
 
-    // Create listing_types table
+    // 3. Create listing_types table
     await queryInterface.createTable("listing_types", {
       id: {
         type: Sequelize.UUID,
@@ -118,7 +115,6 @@ module.exports = {
       code: {
         type: Sequelize.STRING(50),
         allowNull: false,
-        unique: true,
       },
       name: {
         type: Sequelize.STRING(100),
@@ -128,29 +124,28 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      createdAt: {
+      created_at: {
         type: Sequelize.DATE,
-        field: "created_at",
-        defaultValue: Sequelize.NOW,
+        allowNull: false,
+        defaultValue: Sequelize.literal("NOW()"),
       },
-      updatedAt: {
+      updated_at: {
         type: Sequelize.DATE,
-        field: "updated_at",
-        defaultValue: Sequelize.NOW,
+        allowNull: false,
+        defaultValue: Sequelize.literal("NOW()"),
       },
     });
 
-    // Create listings table
+    // 4. Create listings table
     await queryInterface.createTable("listings", {
       id: {
         type: Sequelize.UUID,
         primaryKey: true,
         defaultValue: Sequelize.literal("gen_random_uuid()"),
       },
-      ownerId: {
+      owner_id: {
         type: Sequelize.UUID,
         allowNull: false,
-        field: "owner_id",
         references: {
           model: "users",
           key: "id",
@@ -158,10 +153,9 @@ module.exports = {
         onDelete: "RESTRICT",
         onUpdate: "CASCADE",
       },
-      listingTypeId: {
+      listing_type_id: {
         type: Sequelize.UUID,
         allowNull: true,
-        field: "listing_type_id",
         references: {
           model: "listing_types",
           key: "id",
@@ -180,7 +174,7 @@ module.exports = {
         onUpdate: "RESTRICT",
       },
       title: {
-        type: Sequelize.TEXT,
+        type: Sequelize.STRING,
         allowNull: true,
       },
       description: {
@@ -207,11 +201,11 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: true,
       },
-      latitude: {
+      longitude: {
         type: Sequelize.DOUBLE,
         allowNull: true,
       },
-      longitude: {
+      latitude: {
         type: Sequelize.DOUBLE,
         allowNull: true,
       },
@@ -255,43 +249,40 @@ module.exports = {
         allowNull: false,
         defaultValue: true,
       },
-      expiredAt: {
+      expired_at: {
         type: Sequelize.DATE,
-        field: "expired_at",
         allowNull: true,
       },
       published_at: {
         type: Sequelize.DATE,
         allowNull: true,
       },
-      deletedAt: {
+      deleted_at: {
         type: Sequelize.DATE,
-        field: "deleted_at",
         allowNull: true,
       },
-      createdAt: {
+      created_at: {
         type: Sequelize.DATE,
-        field: "created_at",
-        defaultValue: Sequelize.NOW,
+        allowNull: false,
+        defaultValue: Sequelize.literal("NOW()"),
       },
-      updatedAt: {
+      updated_at: {
         type: Sequelize.DATE,
-        field: "updated_at",
-        defaultValue: Sequelize.NOW,
+        allowNull: false,
+        defaultValue: Sequelize.literal("NOW()"),
       },
     });
 
-    // Create listing_images table
+    // 5. Create listing_images table
     await queryInterface.createTable("listing_images", {
       id: {
         type: Sequelize.UUID,
         primaryKey: true,
         defaultValue: Sequelize.literal("gen_random_uuid()"),
       },
-      listingId: {
+      listing_id: {
         type: Sequelize.UUID,
         allowNull: false,
-        field: "listing_id",
         references: {
           model: "listings",
           key: "id",
@@ -299,29 +290,27 @@ module.exports = {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       },
-      imageUrl: {
+      image_url: {
         type: Sequelize.TEXT,
         allowNull: false,
-        field: "image_url",
       },
-      sortOrder: {
+      sort_order: {
         type: Sequelize.INTEGER,
+        allowNull: true,
         defaultValue: 0,
-        field: "sort_order",
       },
       public_id: {
         type: Sequelize.TEXT,
         allowNull: true,
-        field: "public_id",
       },
-      createdAt: {
+      created_at: {
         type: Sequelize.DATE,
-        field: "created_at",
-        defaultValue: Sequelize.NOW,
+        allowNull: false,
+        defaultValue: Sequelize.literal("NOW()"),
       },
     });
 
-    // Create amenities table
+    // 6. Create amenities table
     await queryInterface.createTable("amenities", {
       id: {
         type: Sequelize.UUID,
@@ -331,35 +320,33 @@ module.exports = {
       name: {
         type: Sequelize.STRING(100),
         allowNull: false,
-        unique: true,
       },
       icon: {
         type: Sequelize.TEXT,
         allowNull: true,
       },
-      createdAt: {
+      created_at: {
         type: Sequelize.DATE,
-        field: "created_at",
-        defaultValue: Sequelize.NOW,
+        allowNull: false,
+        defaultValue: Sequelize.literal("NOW()"),
       },
-      updatedAt: {
+      updated_at: {
         type: Sequelize.DATE,
-        field: "updated_at",
-        defaultValue: Sequelize.NOW,
+        allowNull: false,
+        defaultValue: Sequelize.literal("NOW()"),
       },
     });
 
-    // Create listing_amenities table
+    // 7. Create listing_amenities table
     await queryInterface.createTable("listing_amenities", {
       id: {
         type: Sequelize.UUID,
         primaryKey: true,
         defaultValue: Sequelize.literal("gen_random_uuid()"),
       },
-      listingId: {
+      listing_id: {
         type: Sequelize.UUID,
         allowNull: false,
-        field: "listing_id",
         references: {
           model: "listings",
           key: "id",
@@ -367,10 +354,9 @@ module.exports = {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       },
-      amenitiesId: {
+      amenity_id: {
         type: Sequelize.UUID,
         allowNull: false,
-        field: "amenity_id",
         references: {
           model: "amenities",
           key: "id",
@@ -378,46 +364,43 @@ module.exports = {
         onDelete: "RESTRICT",
         onUpdate: "CASCADE",
       },
-      createdAt: {
+      created_at: {
         type: Sequelize.DATE,
-        field: "created_at",
-        defaultValue: Sequelize.NOW,
+        allowNull: false,
+        defaultValue: Sequelize.literal("NOW()"),
       },
     });
 
-    // Create comments table
+    // 8. Create comments table
     await queryInterface.createTable("comments", {
       id: {
         type: Sequelize.UUID,
         primaryKey: true,
         defaultValue: Sequelize.literal("gen_random_uuid()"),
       },
-      listingId: {
+      user_id: {
         type: Sequelize.UUID,
         allowNull: false,
-        field: "listing_id",
         references: {
-          model: "listings",
+          model: "users",
           key: "id",
         },
         onDelete: "RESTRICT",
         onUpdate: "CASCADE",
       },
-      userId: {
+      listing_id: {
         type: Sequelize.UUID,
-        allowNull: true,
-        field: "user_id",
+        allowNull: false,
         references: {
-          model: "users",
+          model: "listings",
           key: "id",
         },
-        onDelete: "SET NULL",
+        onDelete: "CASCADE",
         onUpdate: "CASCADE",
       },
-      parentId: {
+      parent_id: {
         type: Sequelize.UUID,
         allowNull: true,
-        field: "parent_id",
         references: {
           model: "comments",
           key: "id",
@@ -434,31 +417,29 @@ module.exports = {
         allowNull: false,
         defaultValue: 0,
       },
-      createdAt: {
+      deleted_at: {
         type: Sequelize.DATE,
-        field: "created_at",
-        defaultValue: Sequelize.NOW,
-      },
-      updatedAt: {
-        type: Sequelize.DATE,
-        field: "updated_at",
-        defaultValue: Sequelize.NOW,
-      },
-      deletedAt: {
-        type: Sequelize.DATE,
-        field: "deleted_at",
         allowNull: true,
+      },
+      created_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal("NOW()"),
+      },
+      updated_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal("NOW()"),
       },
     });
 
-    // Create comment_likes table
+    // 9. Create comment_likes table
     await queryInterface.createTable("comment_likes", {
       id: {
         type: Sequelize.UUID,
-        autoIncrement: true,
         primaryKey: true,
+        defaultValue: Sequelize.literal("gen_random_uuid()"),
       },
-
       comment_id: {
         type: Sequelize.UUID,
         allowNull: false,
@@ -468,7 +449,6 @@ module.exports = {
         },
         onDelete: "CASCADE",
       },
-
       user_id: {
         type: Sequelize.UUID,
         allowNull: false,
@@ -478,7 +458,6 @@ module.exports = {
         },
         onDelete: "CASCADE",
       },
-
       created_at: {
         type: Sequelize.DATE,
         allowNull: false,
@@ -486,14 +465,7 @@ module.exports = {
       },
     });
 
-    // Unique constraint for comment_id + user_id to prevent duplicate likes
-    await queryInterface.addConstraint("comment_likes", {
-      fields: ["comment_id", "user_id"],
-      type: "unique",
-      name: "uq_comment_likes_user",
-    });
-
-    // Create chats table
+    // 10. Create chats table
     await queryInterface.createTable("chats", {
       id: {
         type: Sequelize.UUID,
@@ -520,19 +492,19 @@ module.exports = {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       },
-      createdAt: {
+      created_at: {
         type: Sequelize.DATE,
-        field: "created_at",
-        defaultValue: Sequelize.NOW,
+        allowNull: false,
+        defaultValue: Sequelize.literal("NOW()"),
       },
-      updatedAt: {
+      updated_at: {
         type: Sequelize.DATE,
-        field: "updated_at",
-        defaultValue: Sequelize.NOW,
+        allowNull: false,
+        defaultValue: Sequelize.literal("NOW()"),
       },
     });
 
-    // Create messages table
+    // 11. Create messages table
     await queryInterface.createTable("messages", {
       id: {
         type: Sequelize.UUID,
@@ -573,24 +545,32 @@ module.exports = {
         allowNull: false,
         defaultValue: false,
       },
-      createdAt: {
+      created_at: {
         type: Sequelize.DATE,
-        field: "created_at",
-        defaultValue: Sequelize.NOW,
+        allowNull: false,
+        defaultValue: Sequelize.literal("NOW()"),
+      },
+      updated_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal("NOW()"),
+      },
+      deleted_at: {
+        type: Sequelize.DATE,
+        allowNull: true,
       },
     });
 
-    // Create favorites table
+    // 12. Create favorites table
     await queryInterface.createTable("favorites", {
       id: {
         type: Sequelize.UUID,
         primaryKey: true,
         defaultValue: Sequelize.literal("gen_random_uuid()"),
       },
-      userId: {
+      user_id: {
         type: Sequelize.UUID,
         allowNull: false,
-        field: "user_id",
         references: {
           model: "users",
           key: "id",
@@ -598,10 +578,9 @@ module.exports = {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       },
-      listingId: {
+      listing_id: {
         type: Sequelize.UUID,
         allowNull: false,
-        field: "listing_id",
         references: {
           model: "listings",
           key: "id",
@@ -609,24 +588,23 @@ module.exports = {
         onDelete: "CASCADE",
         onUpdate: "CASCADE",
       },
-      createdAt: {
+      created_at: {
         type: Sequelize.DATE,
-        field: "created_at",
-        defaultValue: Sequelize.NOW,
+        allowNull: false,
+        defaultValue: Sequelize.literal("NOW()"),
       },
     });
 
-    // Create notifications table
+    // 13. Create notifications table
     await queryInterface.createTable("notifications", {
       id: {
         type: Sequelize.UUID,
         primaryKey: true,
         defaultValue: Sequelize.literal("gen_random_uuid()"),
       },
-      userId: {
+      recipient_id: {
         type: Sequelize.UUID,
         allowNull: false,
-        field: "user_id",
         references: {
           model: "users",
           key: "id",
@@ -642,29 +620,32 @@ module.exports = {
         type: Sequelize.TEXT,
         allowNull: false,
       },
-      isRead: {
+      is_read: {
         type: Sequelize.BOOLEAN,
+        allowNull: false,
         defaultValue: false,
-        field: "is_read",
       },
-      createdAt: {
+      reference_id: {
+        type: Sequelize.UUID,
+        allowNull: true,
+      },
+      created_at: {
         type: Sequelize.DATE,
-        field: "created_at",
-        defaultValue: Sequelize.NOW,
+        allowNull: false,
+        defaultValue: Sequelize.literal("NOW()"),
       },
     });
 
-    // Create audit_logs table
+    // 14. Create audit_logs table
     await queryInterface.createTable("audit_logs", {
       id: {
         type: Sequelize.UUID,
         primaryKey: true,
         defaultValue: Sequelize.literal("gen_random_uuid()"),
       },
-      userId: {
+      user_id: {
         type: Sequelize.UUID,
-        allowNull: true,
-        field: "user_id",
+        allowNull: false,
         references: {
           model: "users",
           key: "id",
@@ -676,78 +657,38 @@ module.exports = {
         type: Sequelize.STRING(100),
         allowNull: false,
       },
-      entityType: {
+      entity_type: {
         type: Sequelize.STRING(50),
         allowNull: false,
-        field: "entity_type",
       },
-      entityId: {
+      entity_id: {
         type: Sequelize.UUID,
         allowNull: false,
-        field: "entity_id",
       },
-      oldValue: {
+      old_data: {
         type: Sequelize.JSONB,
         allowNull: true,
-        field: "old_value",
       },
-      newValue: {
+      new_data: {
         type: Sequelize.JSONB,
         allowNull: true,
-        field: "new_value",
       },
-      createdAt: {
+      ip_address: {
+        type: Sequelize.STRING(45),
+        allowNull: true,
+      },
+      user_agent: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
+      created_at: {
         type: Sequelize.DATE,
-        field: "created_at",
-        defaultValue: Sequelize.NOW,
+        allowNull: false,
+        defaultValue: Sequelize.literal("NOW()"),
       },
     });
 
-    // Create event_logs table
-    await queryInterface.createTable("event_logs", {
-      id: {
-        type: Sequelize.UUID,
-        primaryKey: true,
-        defaultValue: Sequelize.literal("gen_random_uuid()"),
-      },
-      userId: {
-        type: Sequelize.UUID,
-        allowNull: true,
-        field: "user_id",
-        references: {
-          model: "users",
-          key: "id",
-        },
-        onDelete: "SET NULL",
-        onUpdate: "CASCADE",
-      },
-      eventType: {
-        type: Sequelize.STRING(100),
-        allowNull: false,
-        field: "event_type",
-      },
-      entityType: {
-        type: Sequelize.STRING(50),
-        allowNull: true,
-        field: "entity_type",
-      },
-      entityId: {
-        type: Sequelize.UUID,
-        allowNull: true,
-        field: "entity_id",
-      },
-      metadata: {
-        type: Sequelize.JSONB,
-        allowNull: true,
-      },
-      createdAt: {
-        type: Sequelize.DATE,
-        field: "created_at",
-        defaultValue: Sequelize.NOW,
-      },
-    });
-
-    // Create destinations table
+    // 15. Create destinations table
     await queryInterface.createTable("destinations", {
       id: {
         type: Sequelize.UUID,
@@ -755,11 +696,11 @@ module.exports = {
         defaultValue: Sequelize.literal("gen_random_uuid()"),
       },
       name: {
-        type: Sequelize.STRING(255),
+        type: Sequelize.STRING,
         allowNull: false,
       },
       type: {
-        type: Sequelize.STRING(50),
+        type: Sequelize.STRING,
         allowNull: false,
       },
       location: {
@@ -774,16 +715,26 @@ module.exports = {
         type: Sequelize.INTEGER,
         allowNull: true,
       },
+      created_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal("NOW()"),
+      },
+      updated_at: {
+        type: Sequelize.DATE,
+        allowNull: false,
+        defaultValue: Sequelize.literal("NOW()"),
+      },
     });
 
     // =============== ADD INDEXES ===============
 
-    // Users table indexes
+    // Users
     await queryInterface.addIndex("users", ["role_id"]);
     await queryInterface.addIndex("users", ["status"]);
     await queryInterface.addIndex("users", ["created_at"]);
 
-    // Listings table indexes
+    // Listings
     await queryInterface.addIndex("listings", ["owner_id"]);
     await queryInterface.addIndex("listings", ["listing_type_id"]);
     await queryInterface.addIndex("listings", ["status"]);
@@ -791,122 +742,103 @@ module.exports = {
     await queryInterface.addIndex("listings", ["created_at"]);
     await queryInterface.addIndex("listings", ["price"]);
     await queryInterface.addIndex("listings", ["area"]);
-    await queryInterface.addIndex("listings", ["bedroom"]);
-    await queryInterface.addIndex("listings", ["bathroom"]);
+    await queryInterface.addIndex("listings", ["bedrooms"]);
+    await queryInterface.addIndex("listings", ["bathrooms"]);
     await queryInterface.addIndex("listings", ["latitude", "longitude"]);
     await queryInterface.addIndex("listings", ["deleted_at"]);
-    await queryInterface.sequelize.query(`
-      CREATE INDEX idx_listings_location
-      ON listings
-      USING GIST (location);
-    `);
+    await queryInterface.sequelize.query(
+      "CREATE INDEX idx_listings_location ON listings USING GIST (location)"
+    );
 
-    // Listing images indexes
+    // Listing Images
     await queryInterface.addIndex("listing_images", ["listing_id"]);
     await queryInterface.addIndex("listing_images", ["sort_order"]);
 
-    // Listing amenities indexes
+    // Listing Amenities
     await queryInterface.addIndex("listing_amenities", ["listing_id"]);
     await queryInterface.addIndex("listing_amenities", ["amenity_id"]);
-    // Unique constraint for listing_id + amenity_id
     await queryInterface.addConstraint("listing_amenities", {
       fields: ["listing_id", "amenity_id"],
       type: "unique",
       name: "uq_listing_amenities",
     });
 
-    // Comments indexes
+    // Comments
     await queryInterface.addIndex("comments", ["listing_id"]);
     await queryInterface.addIndex("comments", ["user_id"]);
     await queryInterface.addIndex("comments", ["parent_id"]);
     await queryInterface.addIndex("comments", ["created_at"]);
 
-    // Comment likes indexes
+    // Comment Likes
     await queryInterface.addIndex("comment_likes", ["comment_id"]);
     await queryInterface.addIndex("comment_likes", ["user_id"]);
+    await queryInterface.addConstraint("comment_likes", {
+      fields: ["comment_id", "user_id"],
+      type: "unique",
+      name: "uq_comment_likes_user",
+    });
 
-    // Chats indexes
+    // Chats
     await queryInterface.addIndex("chats", ["tenant_id"]);
     await queryInterface.addIndex("chats", ["owner_id"]);
     await queryInterface.addIndex("chats", ["updated_at"]);
-    // Unique constraint for tenant_id and owner_id to prevent duplicate chats
     await queryInterface.addConstraint("chats", {
       fields: ["tenant_id", "owner_id"],
       type: "unique",
       name: "uq_chats_participants",
     });
 
-    // Messages indexes
+    // Messages
     await queryInterface.addIndex("messages", ["chat_id"]);
     await queryInterface.addIndex("messages", ["sender_id"]);
     await queryInterface.addIndex("messages", ["created_at"]);
 
-    // Favorites indexes
+    // Favorites
     await queryInterface.addIndex("favorites", ["user_id"]);
     await queryInterface.addIndex("favorites", ["listing_id"]);
     await queryInterface.addIndex("favorites", ["created_at"]);
-    // Unique constraint for user_id + listing_id
     await queryInterface.addConstraint("favorites", {
       fields: ["user_id", "listing_id"],
       type: "unique",
       name: "uq_favorites",
     });
 
-    // Notifications indexes
-    await queryInterface.addIndex("notifications", ["user_id"]);
+    // Notifications
+    await queryInterface.addIndex("notifications", ["recipient_id"]);
     await queryInterface.addIndex("notifications", ["is_read"]);
     await queryInterface.addIndex("notifications", ["created_at"]);
 
-    // Audit logs indexes
+    // Audit Logs
     await queryInterface.addIndex("audit_logs", ["user_id"]);
     await queryInterface.addIndex("audit_logs", ["entity_type", "entity_id"]);
     await queryInterface.addIndex("audit_logs", ["created_at"]);
 
-    // Event logs indexes
-    await queryInterface.addIndex("event_logs", ["user_id"]);
-    await queryInterface.addIndex("event_logs", ["event_type"]);
-    await queryInterface.addIndex("event_logs", ["entity_type", "entity_id"]);
-    await queryInterface.addIndex("event_logs", ["created_at"]);
-
-    // Destinations indexes
-    await queryInterface.sequelize.query(`
-      CREATE INDEX idx_destinations_location
-      ON destinations
-      USING GIST (location);
-    `);
-    await queryInterface.addIndex("destinations", ["type"], {
-      name: "idx_destinations_type",
-    });
-    await queryInterface.addIndex("destinations", ["province_code"], {
-      name: "idx_destinations_province",
-    });
+    // Destinations
+    await queryInterface.sequelize.query(
+      "CREATE INDEX idx_destinations_location ON destinations USING GIST (location)"
+    );
+    await queryInterface.addIndex("destinations", ["type"]);
+    await queryInterface.addIndex("destinations", ["province_code"]);
   },
 
   async down(queryInterface, Sequelize) {
-    // Drop tables in reverse order to avoid foreign key constraints
-    const tables = [
-      "event_logs",
-      "audit_logs",
-      "notifications",
-      "favorites",
-      "messages",
-      "chats",
-      "comments",
-      "comment_likes",
-      "listing_amenities",
-      "amenities",
-      "listing_images",
-      "listings",
-      "listing_types",
-      "users",
-      "roles",
-    ];
+    // Drop in reverse order
+    await queryInterface.dropTable("destinations");
+    await queryInterface.dropTable("audit_logs");
+    await queryInterface.dropTable("notifications");
+    await queryInterface.dropTable("favorites");
+    await queryInterface.dropTable("messages");
+    await queryInterface.dropTable("chats");
+    await queryInterface.dropTable("comment_likes");
+    await queryInterface.dropTable("comments");
+    await queryInterface.dropTable("listing_amenities");
+    await queryInterface.dropTable("amenities");
+    await queryInterface.dropTable("listing_images");
+    await queryInterface.dropTable("listings");
+    await queryInterface.dropTable("listing_types");
+    await queryInterface.dropTable("users");
+    await queryInterface.dropTable("roles");
 
-    for (const table of tables) {
-      await queryInterface.dropTable(table);
-    }
-
-    // Disable pgcrypto extension
     await queryInterface.sequelize.query('DROP EXTENSION IF EXISTS "pgcrypto"');
   },
 };
