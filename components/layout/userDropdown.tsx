@@ -97,7 +97,7 @@ export default function UserDropdown({ user, onLogout }: Props) {
           {user.role === "ADMIN" && (
             <Link
               href="/admin/dashboard"
-              className="block px-4 py-2 text-sm hover:bg-slate-100"
+              className="block px-4 py-2 text-sm font-semibold hover:bg-slate-100 text-blue-700"
             >
               Quản trị hệ thống
             </Link>

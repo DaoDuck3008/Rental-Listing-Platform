@@ -90,7 +90,11 @@ export default function AdminSidebar({ onClose }: { onClose?: () => void }) {
       icon: <Layers size={18} />,
       href: "/admin/listing-types",
     },
-    { label: "Quyền hạn", icon: <ShieldCheck size={18} />, href: "/admin/roles" },
+    {
+      label: "Quyền hạn",
+      icon: <ShieldCheck size={18} />,
+      href: "/admin/roles",
+    },
     { label: "Người dùng", icon: <User size={18} />, href: "/admin/users" },
     {
       label: "Địa điểm nổi bật",
@@ -195,13 +199,13 @@ export default function AdminSidebar({ onClose }: { onClose?: () => void }) {
                 ? "bg-blue-500 text-white shadow-md shadow-blue-500/20"
                 : "text-text-secondary hover:bg-slate-50 hover:text-blue-500"
             }`}
-            href={"/admin/settings"}
+            href={"/admin/dashboard"}
           >
             <span className="shrink-0">
               <Settings size={20} />
             </span>
             <span className="text-sm font-semibold whitespace-nowrap">
-              Cài đặt
+              Cài đặt (Đang phát triển)
             </span>
           </Link>
         </nav>
