@@ -13,6 +13,13 @@ import {
   getAuditLogsForAdmin,
   getAuditLogByIdForAdmin,
 } from "../controllers/admin.controller.js";
+import {
+  getAllUsersForAdmin,
+  getUserStatsForAdmin,
+  toggleUserActiveForAdmin,
+  updateUserRoleForAdmin,
+  getUserDetailForAdmin,
+} from "../controllers/user.controller.js";
 
 import {
   getOverviewStatsForAdmin,
@@ -39,10 +46,16 @@ router.get("/listings", getAllListingsForAdmin);
 router.get("/listings/moderation", getAllModeratedListingsForAdmin);
 router.get("/listings/:id", getListingForAdmin);
 
+router.get("/users/stats", getUserStatsForAdmin);
+router.get("/users", getAllUsersForAdmin);
+router.get("/users/:id", getUserDetailForAdmin);
+
 router.get("/audit-logs", getAuditLogsForAdmin);
 router.get("/audit-logs/:id", getAuditLogByIdForAdmin);
 
 router.patch("/listings/:id", upload.array("files", 15), updateListingByAdmin);
+router.patch("/users/:id/toggle-active", toggleUserActiveForAdmin);
+router.patch("/users/:id/role", updateUserRoleForAdmin);
 
 router.post("/listings/:id/approve", approveListing);
 router.post("/listings/:id/reject", rejectListing);

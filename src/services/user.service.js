@@ -187,3 +187,164 @@ export const getMyFavorites = async (userId, limit, page) => {
     throw new DatabaseError("Lỗi không xác định khi yêu thích bài đăng");
   }
 };
+
+export const getAllUsersByAdminService = async (query) => {
+  const { limit = 10, page = 1, keyword = "", role = "", statusFilter = "" } = query;
+  const offset = (page - 1) * limit;
+
+  const where = {};
+  if (keyword) {
+    where[db.Sequelize.Op.or] = [
+      { full_name: { [db.Sequelize.Op.like]: `%${keyword}%` } },
+      { email: { [db.Sequelize.Op.like]: `%${keyword}%` } },
+      { phone_number: { [db.Sequelize.Op.like]: `%${keyword}%` } },
+    ];
+  }
+
+  if (statusFilter !== "") {
+    where.is_active = statusFilter === "active";
+  }
+
+  const include = [
+    {
+      model: Role,
+      as: "role",
+      attributes: ["id", "code", "name"],
+    },
+  ];
+
+  if (role) {
+    include[0].where = { code: role };
+  }
+
+  const result = await User.findAndCountAll({
+    where,
+    include,
+    attributes: {
+      exclude: ["password_hash"],
+    },
+    distinct: true,
+    limit: parseInt(limit),
+    offset: parseInt(offset),
+    order: [["created_at", "DESC"]], 
+  });
+
+  return {
+    data: result.rows,
+    pagination: {
+      page: parseInt(page),
+      limit: parseInt(limit),
+      totalItems: result.count,
+      totalPages: Math.ceil(result.count / limit),
+    },
+  };
+};
+
+export const getUserStatsService = async () => {
+  const totalUsers = await User.count();
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const newUsersToday = await User.count({
+    where: {
+      created_at: { [db.Sequelize.Op.gte]: today },
+    },
+  });
+  const blockedUsers = await User.count({
+    where: { is_active: false },
+  });
+
+  // Count by roles
+  const landlordRole = await Role.findOne({ where: { code: "LANDLORD" } });
+  const tenantRole = await Role.findOne({ where: { code: "TENANT" } });
+
+  const totalLandlords = landlordRole
+    ? await User.count({ where: { role_id: landlordRole.id } })
+    : 0;
+  const totalTenants = tenantRole
+    ? await User.count({ where: { role_id: tenantRole.id } })
+    : 0;
+
+  return {
+    total: totalUsers,
+    newToday: newUsersToday,
+    blocked: blockedUsers,
+    landlords: totalLandlords,
+    tenants: totalTenants,
+  };
+};
+
+export const toggleUserActiveService = async (
+  userId,
+  adminId,
+  auditInfo = {}
+) => {
+  const user = await User.findByPk(userId);
+  if (!user) throw new NotFoundError("Người dùng không tồn tại");
+
+  const oldData = user.toJSON();
+  user.is_active = !user.is_active;
+  await user.save();
+  const newData = user.toJSON();
+
+  await createAuditLog({
+    userId: adminId,
+    action: user.is_active ? "ACTIVATE_USER" : "DEACTIVATE_USER",
+    entityType: "User",
+    entityId: userId,
+    oldData,
+    newData,
+    ipAddress: auditInfo.ipAddress,
+    userAgent: auditInfo.userAgent,
+  });
+
+  return user;
+};
+
+export const updateUserRoleService = async (
+  userId,
+  roleCode,
+  adminId,
+  auditInfo = {}
+) => {
+  const user = await User.findByPk(userId);
+  if (!user) throw new NotFoundError("Người dùng không tồn tại");
+
+  const role = await Role.findOne({ where: { code: roleCode } });
+  if (!role) throw new NotFoundError("Vai trò không tồn tại");
+
+  const oldData = user.toJSON();
+  user.role_id = role.id;
+  await user.save();
+  const newData = user.toJSON();
+
+  await createAuditLog({
+    userId: adminId,
+    action: "UPDATE_USER_ROLE",
+    entityType: "User",
+    entityId: userId,
+    oldData,
+    newData,
+    ipAddress: auditInfo.ipAddress,
+    userAgent: auditInfo.userAgent,
+  });
+
+  return user;
+};
+
+export const getUserDetailForAdminService = async (userId) => {
+  const user = await User.findOne({
+    where: { id: userId },
+    include: [
+      { model: Role, as: "role" },
+      {
+        model: Listing,
+        as: "listings",
+        include: [{ model: ListingImage, as: "images", limit: 1 }],
+      },
+    ],
+    attributes: { exclude: ["password_hash"] },
+  });
+
+  if (!user) throw new NotFoundError("Người dùng không tồn tại");
+  return user;
+};
