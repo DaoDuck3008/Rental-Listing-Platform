@@ -125,8 +125,13 @@ export default function UpdateListingPage() {
           );
         }
       } catch (error: any) {
-        console.error("Error fetching listing:", error);
-        toast.error("Không thể tải thông tin bài đăng.");
+        const res = error.response?.data;
+        if (res) {
+          toast.error(res.message || "Đã có lỗi xảy ra!");
+        } else {
+          console.error("Error fetching listing:", error);
+          toast.error("Không thể tải thông tin bài đăng.");
+        }
       } finally {
         setIsLoading(false);
       }

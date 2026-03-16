@@ -14,11 +14,12 @@ import {
   ShieldCheck,
   User,
   X,
-  Layers,
   Users,
   Home,
   LandPlot,
   Cylinder,
+  ClipboardList,
+  Layers,
 } from "lucide-react";
 import { logout } from "@/services/auth.api";
 import { toast } from "react-toastify";
@@ -70,6 +71,11 @@ export default function AdminSidebar({ onClose }: { onClose?: () => void }) {
       label: "Báo cáo / Vi phạm",
       icon: <Flag size={20} />,
       href: "/admin/reports",
+    },
+    {
+      label: "Lịch sử hoạt động",
+      icon: <ClipboardList size={20} />,
+      href: "/admin/audit-logs",
     },
   ];
 

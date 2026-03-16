@@ -1,5 +1,6 @@
 "use client";
 import AuthGuard from "@/components/guard/authGuard";
+import AppHeader from "@/components/layout/header";
 import UserSidebar from "@/components/user/UserSidebar";
 import { Menu } from "lucide-react";
 import { useState, useEffect } from "react";
@@ -39,6 +40,8 @@ export default function ProfileLayout({
   return (
     <>
       <AuthGuard>
+        <AppHeader />
+
         <div className="flex h-screen overflow-hidden bg-slate-50">
           {/* Mobile Menu Toggle Button */}
           {!isSidebarOpen && (

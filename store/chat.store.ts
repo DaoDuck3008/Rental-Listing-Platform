@@ -52,10 +52,22 @@ export const useChatStore = create<ChatState>((set, get) => ({
   isListOpen: false,
 
   initSocket: (token: string) => {
-    if (get().socket?.connected) return;
+    const { socket: existingSocket } = get();
 
-    const socket = io(process.env.NEXT_PUBLIC_API_URL, {
+    // Nếu socket đã tồn tại, cập nhật token mới và kết nối lại nếu đang ngắt kết nối
+    if (existingSocket) {
+      existingSocket.auth = { token };
+      if (!existingSocket.connected) {
+        existingSocket.connect();
+      }
+      return;
+    }
+
+    const socket = io(process.env.NEXT_PUBLIC_API_URL!, {
       auth: { token },
+      transports: ["polling", "websocket"], 
+      reconnectionAttempts: 5,
+      reconnectionDelay: 1000,
     });
 
     socket.on("connect", () => {
@@ -63,8 +75,28 @@ export const useChatStore = create<ChatState>((set, get) => ({
       get().fetchAllChats();
     });
 
-    socket.on("connect_error", (error) => {
-      console.error("[Socket] Connection Error:", error);
+    socket.on("connect_error", async (error) => {
+      const isAuthError = 
+        error.message === "Invalid token" || 
+        error.message === "No token provided" || 
+        error.message.includes("websocket error"); 
+
+      if (!isAuthError) {
+        console.error("[Socket] Connection Error:", error);
+      }
+      
+      if (isAuthError) {
+        try {
+          const { refresh } = await import("@/services/auth.api");
+          const res = await refresh();
+          if (res.data?.access_token) {
+            const { useAuthStore } = await import("./auth.store");
+            useAuthStore.getState().setAuth(res.data.access_token, useAuthStore.getState().user!);
+          }
+        } catch (refreshError) {
+          console.error("[Socket] Auto-refresh failed:", refreshError);
+        }
+      }
     });
 
     socket.on("new_message", (data: { chatId: string; message: Message }) => {
@@ -88,7 +120,6 @@ export const useChatStore = create<ChatState>((set, get) => ({
       get().removeMessageLocally(data.chatId, data.messageId);
     });
 
-    // --- NOTIFICATION LISTENERS ---
     socket.on("new_notification", (notification: any) => {
       console.log("[Socket] Received new_notification:", notification);
       useNotificationStore.getState().addNotification(notification);
@@ -98,7 +129,6 @@ export const useChatStore = create<ChatState>((set, get) => ({
       useNotificationStore.getState().fetchUnreadCount();
       useNotificationStore.getState().fetchNotifications();
     });
-    // ----------------------------
 
     set({ socket });
   },
