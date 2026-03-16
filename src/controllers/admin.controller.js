@@ -16,7 +16,7 @@ import { getAuditLogs, getAuditLogById } from "../services/auditLog.service.js";
 export const getAuditLogsForAdmin = async (req, res, next) => {
   try {
     const { page, limit, userId, action, entityType } = req.query;
-    
+
     const result = await getAuditLogs({
       page: parseInt(page) || 1,
       limit: parseInt(limit) || 50,
@@ -203,11 +203,25 @@ export const rejectEditDraft = async (req, res, next) => {
     const { id } = req.params;
     const { reason } = req.body;
 
-    const result = await rejectEditDraftListingService(id, reason, req.user.id, {
-      ipAddress: req.ip,
-      userAgent: req.get("user-agent"),
-    });
+    const result = await rejectEditDraftListingService(
+      id,
+      reason,
+      req.user.id,
+      {
+        ipAddress: req.ip,
+        userAgent: req.get("user-agent"),
+      }
+    );
 
+    // Notification
+    await createNotification(
+      {
+        message: `Bài đăng chỉnh sửa của bạn đã bị từ chối. Lý do: ${reason}`,
+        type: "NEW_REJECTED",
+        referenceId: id,
+      },
+      req.user.id
+    );
     return res.status(200).json({
       success: true,
       message: "Từ chối bản chỉnh sửa thành công",
