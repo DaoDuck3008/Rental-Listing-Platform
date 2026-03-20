@@ -32,6 +32,8 @@ import {
   updateSoftListingSchema,
   updateHardListingSchema,
 } from "../validators/listing.validator.js";
+import { listingCreationLimiter } from "../middlewares/rateLimit.middleware.js";
+
 
 const router = express.Router();
 
@@ -58,6 +60,7 @@ router.post(
   "/create",
   protect,
   requireRole(["LANDLORD", "ADMIN"]),
+  listingCreationLimiter,
   upload.array("files", 15),
   validate(createListingSchema),
   createListing
@@ -107,6 +110,7 @@ router.post(
   "/:id/submit",
   protect,
   requireRole(["LANDLORD", "ADMIN"]),
+  listingCreationLimiter,
   upload.array("files", 15),
   validate(createListingSchema),
   submitDraftListing
