@@ -96,7 +96,16 @@ module.exports = {
       is_locked: {
         type: Sequelize.BOOLEAN,
         allowNull: false,
-        defaultValue: true,
+        defaultValue: false,
+      },
+      is_email_verified: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
+      email_verified_at: {
+        type: Sequelize.DATE,
+        allowNull: true,
       },
       created_at: {
         type: Sequelize.DATE,
@@ -120,6 +129,7 @@ module.exports = {
       code: {
         type: Sequelize.STRING(50),
         allowNull: false,
+        unique: true,
       },
       name: {
         type: Sequelize.STRING(100),
@@ -325,6 +335,7 @@ module.exports = {
       name: {
         type: Sequelize.STRING(100),
         allowNull: false,
+        unique: true,
       },
       icon: {
         type: Sequelize.TEXT,
@@ -650,7 +661,7 @@ module.exports = {
       },
       user_id: {
         type: Sequelize.UUID,
-        allowNull: false,
+        allowNull: true,
         references: {
           model: "users",
           key: "id",
@@ -737,6 +748,7 @@ module.exports = {
     // Users
     await queryInterface.addIndex("users", ["role_id"]);
     await queryInterface.addIndex("users", ["status"]);
+    await queryInterface.addIndex("users", ["phone_number"]);
     await queryInterface.addIndex("users", ["created_at"]);
 
     // Listings
@@ -749,6 +761,8 @@ module.exports = {
     await queryInterface.addIndex("listings", ["area"]);
     await queryInterface.addIndex("listings", ["bedrooms"]);
     await queryInterface.addIndex("listings", ["bathrooms"]);
+    await queryInterface.addIndex("listings", ["province_code"]);
+    await queryInterface.addIndex("listings", ["ward_code"]);
     await queryInterface.addIndex("listings", ["latitude", "longitude"]);
     await queryInterface.addIndex("listings", ["deleted_at"]);
     await queryInterface.sequelize.query(
@@ -811,10 +825,12 @@ module.exports = {
     // Notifications
     await queryInterface.addIndex("notifications", ["recipient_id"]);
     await queryInterface.addIndex("notifications", ["is_read"]);
+    await queryInterface.addIndex("notifications", ["recipient_id", "is_read"]);
     await queryInterface.addIndex("notifications", ["created_at"]);
 
     // Audit Logs
     await queryInterface.addIndex("audit_logs", ["user_id"]);
+    await queryInterface.addIndex("audit_logs", ["action"]);
     await queryInterface.addIndex("audit_logs", ["entity_type", "entity_id"]);
     await queryInterface.addIndex("audit_logs", ["created_at"]);
 
@@ -824,6 +840,7 @@ module.exports = {
     );
     await queryInterface.addIndex("destinations", ["type"]);
     await queryInterface.addIndex("destinations", ["province_code"]);
+    await queryInterface.addIndex("destinations", ["ward_code"]);
   },
 
   async down(queryInterface, Sequelize) {
