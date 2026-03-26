@@ -1,0 +1,29 @@
+import express from "express";
+import {
+  getFavorites,
+  getMe,
+  getProfile,
+  updateProfile,
+  getUserDashboardData,
+} from "../controllers/user.controller.js";
+import { upload } from "../middlewares/upload.middleware.js";
+import { protect } from "../middlewares/auth.middleware.js";
+import { validate } from "../middlewares/validate.middleware.js";
+import { updateProfileSchema } from "../validators/user.validator.js";
+
+const router = express.Router();
+
+router.get("/me", protect, getMe);
+router.get("/profile", protect, getProfile);
+router.put(
+  "/profile",
+  protect,
+  upload.single("avatar"),
+  validate(updateProfileSchema),
+  updateProfile
+);
+
+router.get("/favorites", protect, getFavorites);
+router.get("/dashboard", protect, getUserDashboardData);
+
+export default router;

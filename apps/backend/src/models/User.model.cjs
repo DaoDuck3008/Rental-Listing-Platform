@@ -1,0 +1,119 @@
+"use strict";
+const { Model } = require("sequelize");
+
+module.exports = (sequelize, DataTypes) => {
+  class User extends Model {
+    static associate(models) {
+      // N Users -> 1 Role
+      User.belongsTo(models.Role, {
+        foreignKey: "role_id",
+        as: "role",
+      });
+
+      User.hasMany(models.Listing, {
+        foreignKey: "owner_id",
+        as: "listings",
+      });
+
+      // 1 User -> N Comment
+      User.hasMany(models.Comment, {
+        foreignKey: "user_id",
+        as: "comments",
+      });
+
+      // 1 User -> N CommentLike
+      User.hasMany(models.CommentLike, {
+        foreignKey: "user_id",
+        as: "comment_likes",
+      });
+    }
+  }
+
+  User.init(
+    {
+      id: {
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true,
+        allowNull: false,
+      },
+
+      role_id: {
+        type: DataTypes.UUID,
+        allowNull: false,
+      },
+
+      email: {
+        type: DataTypes.STRING(255),
+        allowNull: false,
+        unique: true,
+      },
+
+      phone_number: {
+        type: DataTypes.STRING(11),
+        allowNull: true,
+      },
+
+      password_hash: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+
+      full_name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+
+      gender: {
+        type: DataTypes.STRING(10),
+        allowNull: true,
+        defaultValue: "Male",
+      },
+
+      avatar: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+
+      status: {
+        type: DataTypes.STRING(20),
+        allowNull: true,
+        defaultValue: "Active",
+      },
+
+      provider: {
+        type: DataTypes.STRING(20),
+        allowNull: true,
+        defaultValue: "Local",
+      },
+
+      provider_user_id: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
+      is_locked: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
+      is_email_verified: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
+      email_verified_at: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
+    },
+    {
+      sequelize,
+      modelName: "User",
+      tableName: "users",
+      timestamps: true,
+      underscored: true,
+    }
+  );
+
+  return User;
+};
