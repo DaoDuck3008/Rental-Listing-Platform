@@ -295,6 +295,9 @@ export const searchPublishedListingsService = async (params) => {
       case "DATE_ASC":
         orderBy.push(["updated_at", "ASC"]);
         break;
+      case "VIEW_DESC":
+        orderBy.push(["views", "DESC"]);
+        break;
       case "DATE_DESC":
       default:
         orderBy.push(["updated_at", "DESC"]);

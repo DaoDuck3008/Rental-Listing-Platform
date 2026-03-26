@@ -4,15 +4,17 @@ import { getRedis } from "../config/redis.js";
 import TooManyRequestsError from "../errors/TooManyRequestsError.js";
 
 export const listingCreationLimiter = rateLimit({
-  windowMs: 60 * 60 * 12000, // 12 giờ
+  windowMs: 12 * 60 * 60 * 1000, // 12 giờ
   limit: 10, // 10 bài viết/12 giờ
-  standardHeaders: true, // Trả về thông tin rate limit trong header
-  legacyHeaders: false, // Không trả về header cũ
+  standardHeaders: true,
+  legacyHeaders: false,
+  validate: { default: false }, // Tắt cảnh báo IPv6 để tránh lỗi crash
   store: new RedisStore({
     sendCommand: (...args) => getRedis().call(...args),
   }),
   keyGenerator: (req) => {
-    return req.user?.id?.toString() || req.ip;
+    // Luôn dựa trên User ID vì đã được bảo vệ bởi middleware protect
+    return req.user.id.toString();
   },
   handler: (req, res, next, options) => {
     next(
@@ -30,6 +32,7 @@ export const apiLimiter = rateLimit({
   limit: 100, // 100 request/15 phút
   standardHeaders: true,
   legacyHeaders: false,
+  validate: { default: false }, // Tắt cảnh báo IPv6
   store: new RedisStore({
     sendCommand: (...args) => getRedis().call(...args),
   }),

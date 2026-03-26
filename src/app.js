@@ -28,6 +28,9 @@ dotenv.config();
 
 const app = express();
 
+// Trust proxy for rate limiting
+app.set("trust proxy", 1);
+
 // MIDDLEWARE
 app.use(
   cors({
@@ -53,8 +56,8 @@ const connectDB = async () => {
     console.error(">>> [Database] Kết nối thất bại: ", error);
   }
 };
-
 connectDB();
+
 // CONNECT REDIS
 initRedis();
 // VERIFY SMTP
