@@ -12,7 +12,15 @@
 </div>
 
 <p align="center">
+  🌍 <b>Language:</b> <b>English</b> | <a href="README.vi.md">Tiếng Việt</a>
+</p>
+
+<p align="center">
   <strong>DaoDuck Rental</strong> is a high-performance, full-stack rental listing platform built with a modern tech stack centered around <strong>Next.js 16 (React 19)</strong> and <strong>Express 5</strong>. Designed with scalability and security in mind, it features a modular architecture, real-time updates, and robust security measures like Redis-based rate limiting.
+</p>
+
+<p align="center">
+  🔗 <b>Repositories:</b> <a href="https://github.com/DaoDuck3008/FE-Rental-Listing-Platform">Frontend</a> | <a href="https://github.com/DaoDuck3008/BE-Rental-Listing-Platform">Backend</a>
 </p>
 
 ---
