@@ -2,7 +2,7 @@
 import AuthGuard from "@/components/guard/authGuard";
 import AppHeader from "@/components/layout/header";
 import UserSidebar from "@/components/user/UserSidebar";
-import { Menu } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useState, useEffect } from "react";
 
 export default function ProfileLayout({
@@ -43,17 +43,6 @@ export default function ProfileLayout({
         <AppHeader />
 
         <div className="flex h-screen overflow-hidden bg-slate-50">
-          {/* Mobile Menu Toggle Button */}
-          {!isSidebarOpen && (
-            <button
-              onClick={toggleSidebar}
-              className=" fixed top-4 left-4 z-50 p-2 bg-white rounded-lg shadow-lg hover:bg-slate-100 transition-colors border border-slate-200"
-              aria-label="Toggle sidebar"
-            >
-              <Menu className="h-6 w-6 text-slate-700" />
-            </button>
-          )}
-
           {/* Overlay for mobile */}
           {isSidebarOpen && (
             <div
@@ -72,6 +61,19 @@ export default function ProfileLayout({
             `}
           >
             <UserSidebar onClose={closeSidebar} />
+            
+            {/* Sidebar Toggle Button */}
+            <button
+              onClick={toggleSidebar}
+              className="absolute top-1/2 -right-6 -translate-y-1/2 flex items-center justify-center w-6 h-14 bg-white border border-slate-200 border-l-0 shadow-md rounded-r-xl hover:bg-slate-50 transition-colors cursor-pointer"
+              aria-label="Toggle sidebar"
+            >
+              {isSidebarOpen ? (
+                <ChevronLeft className="h-5 w-5 text-slate-600" />
+              ) : (
+                <ChevronRight className="h-5 w-5 text-slate-600" />
+              )}
+            </button>
           </div>
 
           {/* Main Content */}

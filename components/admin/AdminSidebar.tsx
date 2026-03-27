@@ -112,12 +112,10 @@ export default function AdminSidebar({ onClose }: { onClose?: () => void }) {
         <div className="flex items-center justify-between mb-8">
           <Link href="/" className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg flex items-center justify-center text-white shrink-0 shadow-lg shadow-blue-500/30 border border-slate-100">
-              <span className="material-symbols-outlined flex items-center justify-center">
-                <Handshake color="#137fec" size={30} />
-              </span>
+              <img src="/logo_white_bg.png" alt="Logo" width={70} height={70} />
             </div>
-            <span className="text-xl font-extrabold tracking-tight text-blue-500 whitespace-nowrap">
-              Admin Panel
+            <span className="text-xl font-extrabold tracking-tight text-[#1e4263] whitespace-nowrap">
+              DaoDuck<span className="text-[#e4a265]">Rental</span>
             </span>
           </Link>
           {onClose && (
