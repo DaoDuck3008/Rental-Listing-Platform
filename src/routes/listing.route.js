@@ -226,7 +226,7 @@ router.post(
  * @swagger
  * /api/listings/{id}/update-soft:
  *   patch:
- *     summary: "Soft Update" minor details on an active property (Bypasses Admin Moderation)
+ *     summary: Soft Update minor details on an active property (Bypasses Admin Moderation)
  *     tags: [Listings]
  *     security:
  *       - bearerAuth: []
@@ -253,7 +253,7 @@ router.patch(
  * @swagger
  * /api/listings/{id}/update-hard:
  *   patch:
- *     summary: "Hard Update" major fields. Enforces the creation of a temporary draft for moderation.
+ *     summary: Hard Update major fields. Enforces the creation of a temporary draft for moderation.
  *     tags: [Listings]
  *     security:
  *       - bearerAuth: []
