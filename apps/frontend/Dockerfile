@@ -1,0 +1,29 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy package files and install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy application source code
+COPY . .
+
+# Build-time environment variables defined as build args
+ARG NEXT_PUBLIC_API_URL
+ARG NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID
+ARG NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_SECRET
+ARG NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID=$NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID
+ENV NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_SECRET=$NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_SECRET
+ENV NEXT_PUBLIC_GOOGLE_MAPS_API_KEY=$NEXT_PUBLIC_GOOGLE_MAPS_API_KEY
+
+RUN npm run build
+
+# Expose Next.js default port
+EXPOSE 3000
+
+# Start server
+CMD ["npm", "start"]

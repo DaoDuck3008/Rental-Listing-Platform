@@ -109,19 +109,27 @@ graph TD
 
 Choose one of the following methods to get the project running:
 
-#### Method 1: Docker (Coming Soon 🚧)
-> **Note**: Docker support is currently in development.
+#### Method 1: Docker (Quickest Setup)
 
-```bash
-# Clone the repository
-git clone https://github.com/DaoDuck3008/Rental-Listing-Platform.git
-cd Rental-Listing-Platform
+1. **Clone the repository**:
+   ```bash
+   git clone https://github.com/DaoDuck3008/Rental-Listing-Platform.git
+   cd Rental-Listing-Platform
+   ```
 
-# Start services with Docker Compose
-docker-compose up --build
-```
+2. **Setup environment variables**:
+   Create `.env` files in both frontend and backend directories.
+   ```bash
+   cp apps/backend/.env.example apps/backend/.env
+   cp apps/frontend/.env.example apps/frontend/.env
+   ```
 
-#### Method 2: Manual Installation (Recommended)
+3. **Start all services**:
+   ```bash
+   docker-compose up --build -d
+   ```
+   > **Note**: The application will be available at `http://localhost:3000`. Docker Compose will automatically spin up PostgreSQL, Redis, Backend, and Frontend.
+#### Method 2: Manual Installation (If you don't use Docker)
 
 1. **Clone the repository**:
    ```bash
@@ -133,6 +141,7 @@ docker-compose up --build
    ```bash
    cd apps/backend
    npm install
+   # Make sure that your PostgreSQL and Redis are running!
    # Create .env based on .env.example and configure DB/Redis
    npm run dev
    ```

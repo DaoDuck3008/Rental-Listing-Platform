@@ -110,19 +110,28 @@ graph TD
 
 Chọn một trong các phương thức sau để chạy dự án:
 
-#### Cách 1: Docker (Sắp ra mắt 🚧)
-> **Ghi chú**: Hỗ trợ Docker hiện đang trong quá trình phát triển.
+#### Cách 1: Docker (Cách cài đặt nhanh nhất)
 
-```bash
-# Clone repository
-git clone https://github.com/DaoDuck3008/Rental-Listing-Platform.git
-cd Rental-Listing-Platform
+1. **Clone repository**:
+   ```bash
+   git clone https://github.com/DaoDuck3008/Rental-Listing-Platform.git
+   cd Rental-Listing-Platform
+   ```
 
-# Chạy dịch vụ với Docker Compose
-docker-compose up --build
-```
+2. **Thiết lập biến môi trường**:
+   Tạo file `.env` từ file `.env.example` ở cả hai thư mục frontend và backend.
+   ```bash
+   cp apps/backend/.env.example apps/backend/.env
+   cp apps/frontend/.env.example apps/frontend/.env
+   ```
 
-#### Cách 2: Cài đặt thủ công (Khuyên dùng)
+3. **Chạy toàn bộ dịch vụ**:
+   ```bash
+   docker-compose up --build -d
+   ```
+   > **Ghi chú**: Ứng dụng sẽ tự động chạy tại `http://localhost:3000`. Docker Compose sẽ lo toàn bộ việc khởi tạo cơ sở dữ liệu (PostgreSQL, Redis), Backend (cổng 5000) và Frontend.
+
+#### Cách 2: Cài đặt thủ công (Nếu bạn không dùng Docker)
 
 1. **Clone repository**:
    ```bash
@@ -134,6 +143,7 @@ docker-compose up --build
    ```bash
    cd apps/backend
    npm install
+   # Hãy chắc chắn rằng PostgreSQL và Redis của bạn đang chạy!
    # Tạo file .env dựa trên .env.example và cấu hình DB/Redis
    npm run dev
    ```
