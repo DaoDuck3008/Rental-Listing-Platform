@@ -60,13 +60,13 @@ export default function AppHeader() {
         {/* Logo */}
         <Link
           href="/"
-          className="flex items-center gap-2 text-slate-900 cursor-pointer relative z-70"
+          className="flex items-center text-slate-900 cursor-pointer relative z-70"
           onClick={() => setIsMenuOpen(false)}
         >
-          <div className="size-8 text-primary flex items-center justify-center">
-            <Handshake color="#137fec" size={30} />
+          <div className=" text-primary flex items-center justify-center">
+            <img src="/logo_white_bg.png" alt="Logo" width={70} height={70} />
           </div>
-          <h2 className="text-xl font-bold tracking-tight">RentalHome</h2>
+          <h2 className="text-xl text-[#1e4263] font-bold tracking-tight">DaoDuck<span className="text-[#e4a265]">Rental</span></h2>
         </Link>
 
         {/* Desktop Navigation */}

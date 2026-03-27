@@ -7,12 +7,10 @@ export default function AppFooter() {
         <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
           <div className="col-span-2 lg:col-span-2">
             <div className="flex items-center gap-2 text-slate-900 dark:text-white mb-6">
-              <div className="size-6 text-primary flex items-center justify-center">
-                <span className="material-symbols-outlined text-2xl">
-                  <Handshake color="#137fec" size={30} />
-                </span>
+              <div className=" text-primary flex items-center justify-center">
+                <img src="/logo_white_bg.png" alt="Logo" width={70} height={70} />
               </div>
-              <h2 className="text-lg font-bold">RentalHome</h2>
+              <h2 className="text-lg text-[#1e4263] font-bold tracking-tight">DaoDuck<span className="text-[#e4a265]">Rental</span></h2>
             </div>
             <p className="text-slate-500 dark:text-slate-400 text-sm max-w-sm mb-6">
               Nền tảng đáng tin cậy nhất để tìm kiếm nhà cho thuê. Chúng tôi kết

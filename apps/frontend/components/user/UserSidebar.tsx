@@ -6,7 +6,6 @@ import {
   LogOut,
   Newspaper,
   User,
-  X,
 } from "lucide-react";
 import { logout } from "@/services/auth.api";
 import { toast } from "react-toastify";
@@ -41,26 +40,15 @@ export default function UserSidebar({ onClose }: { onClose: () => void }) {
       id="sidebar"
     >
       <div className="p-6">
-        <div className="flex items-center justify-between mb-8">
+        {/* <div className="flex items-center justify-between mb-4">
           <Link href="/" className="flex items-center gap-3">
-            <div className="w-10 h-10  rounded-lg flex items-center justify-center text-white shrink-0 shadow-lg shadow-blue-500/30">
-              <span className="material-symbols-outlined">
-                <Handshake color="#137fec" size={30} />
-              </span>
+            <div className=" text-primary flex items-center justify-center">
+              <img src="/logo_white_bg.png" alt="Logo" width={70} height={70} />
             </div>
-            <span className="text-xl font-extrabold tracking-tight text-blue-500 whitespace-nowrap">
-              Rental House
-            </span>
+            <h2 className="text-xl text-[#1e4263] font-bold tracking-tight">DaoDuck<span className="text-[#e4a265]">Rental</span></h2>
           </Link>
-          <button
-            className="text-slate-400 cursor-pointer hover:text-blue-500 transition-colors p-1 rounded-lg hover:bg-slate-100"
-            onClick={onClose}
-            aria-label="Close sidebar"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-        <div className="flex flex-col gap-6">
+        </div> */}
+        <div className="flex flex-col gap-6 mt-15">
           <div className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-100">
             <div className="bg-center bg-no-repeat border-blue-500/20 shrink-0">
               {user!.avatar ? (
