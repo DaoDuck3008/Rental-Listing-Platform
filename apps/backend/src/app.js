@@ -22,7 +22,11 @@ import notificationRoutes from "./routes/notification.route.js";
 
 import { initRedis } from "./config/redis.js";
 import { verifyMailConnection } from "./config/mail.js";
+import { verifyCloudinaryConnection } from "./config/cloudinary.js";
 import { startSyncListingViewsJob } from "./jobs/syncListingViews.job.js";
+
+import swaggerUi from "swagger-ui-express";
+import { swaggerSpec } from "./config/swagger.js";
 
 dotenv.config();
 
@@ -62,6 +66,11 @@ connectDB();
 initRedis();
 // VERIFY SMTP
 verifyMailConnection();
+// VERIFY CLOUDINARY
+verifyCloudinaryConnection();
+
+// SWAGGER DOCS (Đặt trước các route cơ bản)
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // ROUTE
 app.use("/", defaultRoutes);
