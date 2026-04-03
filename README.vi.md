@@ -129,7 +129,13 @@ Chọn một trong các phương thức sau để chạy dự án:
    ```bash
    docker-compose up --build -d
    ```
-   > **Ghi chú**: Ứng dụng sẽ tự động chạy tại `http://localhost:3000`. Docker Compose sẽ lo toàn bộ việc khởi tạo cơ sở dữ liệu (PostgreSQL, Redis), Backend (cổng 5000) và Frontend.
+   > **Ghi chú**: Ứng dụng sẽ tự động chạy tại `http://localhost:3000`. Docker Compose sẽ lo toàn bộ việc khởi tạo cơ sở dữ liệu (PostgreSQL, Redis), Backend (cổng 5000) và Frontend. Đặc biệt Backend sẽ tự động chạy migration để tạo các bảng trong cơ sở dữ liệu.
+
+4. **Nạp dữ liệu mẫu (Seeder - Tùy chọn)**:
+   Sau khi các dịch vụ đã hoạt động ổn định, hãy gõ lệnh sau ở một cửa sổ terminal mới để nạp dữ liệu mẫu ban đầu vào cơ sở dữ liệu:
+   ```bash
+   docker exec -it rental_backend npx sequelize-cli db:seed:all
+   ```
 
 #### Cách 2: Cài đặt thủ công (Nếu bạn không dùng Docker)
 

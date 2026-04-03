@@ -128,7 +128,13 @@ Choose one of the following methods to get the project running:
    ```bash
    docker-compose up --build -d
    ```
-   > **Note**: The application will be available at `http://localhost:3000`. Docker Compose will automatically spin up PostgreSQL, Redis, Backend, and Frontend.
+   > **Note**: The application will be available at `http://localhost:3000`. Docker Compose will automatically spin up PostgreSQL, Redis, Backend (port 5000), and Frontend. The backend container will automatically run the database migrations on startup.
+
+4. **Seed the database (Optional but recommended)**:
+   Once the containers are running smoothly, execute this command in a new terminal to populate the database with initial dummy data:
+   ```bash
+   docker exec -it rental_backend npx sequelize-cli db:seed:all
+   ```
 #### Method 2: Manual Installation (If you don't use Docker)
 
 1. **Clone the repository**:
