@@ -15,12 +15,14 @@ export const getWardsByProvince = async (province_code: number) => {
   return res.data;
 };
 
-export const getProvinceById = async (code: string | number) => {
+export const getProvinceById = async (code: string | number | null | undefined) => {
+  if (!code) return null;
   const res = await provinceApi.get(`/p/${code}`);
   return res.data;
 };
 
-export const getWardById = async (code: string | number) => {
+export const getWardById = async (code: string | number | null | undefined) => {
+  if (!code) return null;
   const res = await provinceApi.get(`/w/${code}`);
   return res.data;
 };
