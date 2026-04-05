@@ -1,5 +1,6 @@
 import GuestGuard from "@/components/guard/guestGuard";
 import AppHeader from "@/components/layout/header";
+import { Suspense } from "react";
 
 export default function AuthLayout({
   children,
@@ -8,10 +9,12 @@ export default function AuthLayout({
 }) {
   return (
     <>
-      <GuestGuard>
-        <AppHeader />
-        {children}
-      </GuestGuard>
+      <Suspense fallback={<div>Loading...</div>}>
+        <GuestGuard>
+          <AppHeader />
+          {children}
+        </GuestGuard>
+      </Suspense>
     </>
   );
 }
