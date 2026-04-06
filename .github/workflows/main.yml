@@ -3,10 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main
-  pull_request:
-    branches:
-      - main
+      - production
 
 jobs:
   build-and-push-dockers:
@@ -70,7 +67,7 @@ jobs:
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          password: ${{ secrets.SSH_PASSWORD }}
           script: |
             # Lấy tên repo owner viết thường (do docker không nhận ký tự in hoa)
             export OWNER_LC=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
