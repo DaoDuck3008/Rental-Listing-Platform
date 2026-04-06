@@ -118,7 +118,7 @@ export default function Home() {
             <div className="relative z-10 w-full max-w-240 px-4 flex flex-col items-center text-center gap-8">
               <div className="space-y-4">
                 <h1 className="text-white text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight drop-shadow-sm">
-                  Khám phá nơi bạn muốn sống
+                  Khám phá nơi bạn muốn ở
                 </h1>
                 <h2 className="text-slate-200 text-lg md:text-xl font-medium max-w-2xl mx-auto">
                   Tìm kiếm hơn 1 triệu căn hộ, nhà ở và chung cư cho thuê từ các
