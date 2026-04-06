@@ -72,9 +72,6 @@ jobs:
             # Lấy tên repo owner viết thường (do docker không nhận ký tự in hoa)
             export OWNER_LC=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
             
-            # Đăng nhập vào GHCR trên VPS để có thể Tải Image về (nếu repo Private)
-            echo ${{ secrets.GITHUB_PAT }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            
             # Di chuyển vào thư mục chứa docker-compose.yml
             cd services/Rental-Listing-Platform
 
@@ -86,5 +83,5 @@ jobs:
             docker tag ghcr.io/$OWNER_LC/rental-backend:latest rental-listing-platform-backend:latest
             docker tag ghcr.io/$OWNER_LC/rental-frontend:latest rental-listing-platform-frontend:latest
 
-            docker-compose up -d
+            docker compose up -d
             docker image prune -f
