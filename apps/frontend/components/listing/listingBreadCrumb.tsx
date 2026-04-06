@@ -26,20 +26,28 @@ export default function ListingBreadcrumb({
           >
             Trang chủ
           </Link>
-          <span className="text-[#92adc9] font-medium">/</span>
-          <Link
-            className="text-[#92adc9] hover:text-primary font-medium"
-            href="/"
-          >
-            {province.name}
-          </Link>
-          <span className="text-[#92adc9] font-medium">/</span>
-          <Link
-            className="text-[#92adc9] hover:text-primary font-medium"
-            href="/"
-          >
-            {ward.name}
-          </Link>
+          {province && (
+            <>
+              <span className="text-[#92adc9] font-medium">/</span>
+              <Link
+                className="text-[#92adc9] hover:text-primary font-medium"
+                href="/"
+              >
+                {province.name}
+              </Link>
+            </>
+          )}
+          {ward && (
+            <>
+              <span className="text-[#92adc9] font-medium">/</span>
+              <Link
+                className="text-[#92adc9] hover:text-primary font-medium"
+                href="/"
+              >
+                {ward.name}
+              </Link>
+            </>
+          )}
           <span className="text-[#92adc9] font-medium">/</span>
           <span className="text-slate-900 font-medium">{title}</span>
         </div>
