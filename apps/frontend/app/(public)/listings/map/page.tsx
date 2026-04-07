@@ -8,7 +8,7 @@ import { Search, ChevronDown, Grid, Map, Filter, Loader2 } from "lucide-react";
 import { useProvinces, useWardsByProvince } from "@/hooks/useProvinces";
 import { useListingTypes } from "@/hooks/useListing";
 import { useAmenities } from "@/hooks/useAmenities";
-import { getPublicListings } from "@/services/listing.api";
+import { getPublicMapListings } from "@/services/listing.api";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -36,7 +36,6 @@ export default function MapSearchPage() {
     maxLat: undefined as number | undefined,
     minLng: undefined as number | undefined,
     maxLng: undefined as number | undefined,
-    include_markers: true,
   });
 
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -63,7 +62,7 @@ export default function MapSearchPage() {
     const fetchListings = async () => {
       setIsLoading(true);
       try {
-        const result = await getPublicListings(filters);
+        const result = await getPublicMapListings(filters);
         setData(result);
         if (result.markers) {
           setMarkers(result.markers);
@@ -107,7 +106,6 @@ export default function MapSearchPage() {
       maxLat: undefined,
       minLng: undefined,
       maxLng: undefined,
-      include_markers: true,
     });
 
     setMapControl((prev) => ({
