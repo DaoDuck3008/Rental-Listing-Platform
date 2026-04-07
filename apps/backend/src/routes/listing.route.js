@@ -14,10 +14,11 @@ import {
   updateSoftPublisedListing,
   getMyListingById,
   updateHardPublishedListing,
-  getAllPublishedListings,
-  favoriteListing,
-  getNearbyDestinationsListing,
   getRelatedListingsController,
+  searchMapListings,
+  getAllPublishedListings,
+  getNearbyDestinationsListing,
+  favoriteListing
 } from "../controllers/listing.controller.js";
 import {
   protect,
@@ -32,7 +33,7 @@ import {
   updateSoftListingSchema,
   updateHardListingSchema,
 } from "../validators/listing.validator.js";
-import { listingCreationLimiter } from "../middlewares/rateLimit.middleware.js";
+import { listingCreationLimiter, otherLimiter, mapSearchLimiter } from "../middlewares/rateLimit.middleware.js";
 
 const router = express.Router();
 
@@ -54,6 +55,7 @@ const router = express.Router();
  *         description: Returning array of published properties
  */
 router.get("/", getAllPublishedListings);
+router.get("/map", mapSearchLimiter, searchMapListings);
 
 /**
  * @swagger

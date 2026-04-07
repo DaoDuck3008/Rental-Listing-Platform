@@ -47,16 +47,8 @@ export const getPublicListings = async (params: {
   beds?: number;
   amenities?: string[];
   sort_by?: string;
-  centerLat?: number;
-  centerLong?: number;
-  radius?: number;
-  minLat?: number;
-  maxLat?: number;
-  minLng?: number;
-  maxLng?: number;
-  include_markers?: boolean | string;
 }) => {
-  const { amenities, centerLat, centerLong, radius, minLat, maxLat, minLng, maxLng, include_markers, ...rest } = params;
+  const { amenities, ...rest } = params;
   let url = `/api/listings?`;
   Object.entries(rest).forEach(([key, value]) => {
     if (value !== undefined && value !== null && value !== "") {
@@ -68,16 +60,42 @@ export const getPublicListings = async (params: {
     url += `amenities=${amenities.join(",")}&`;
   }
 
-  if (centerLat !== undefined && centerLong !== undefined && radius !== undefined && radius >= 100) {
-    url += `centerLat=${centerLat}&centerLong=${centerLong}&radius=${radius}&`;
-  }
+  const res = await api.get(url.slice(0, -1));
+  return res.data;
+};
 
-  if (minLat !== undefined && maxLat !== undefined && minLng !== undefined && maxLng !== undefined) {
-    url += `minLat=${minLat}&maxLat=${maxLat}&minLng=${minLng}&maxLng=${maxLng}&`;
-  }
+export const getPublicMapListings = async (params: {
+  page?: number;
+  limit?: number;
+  keyword?: string;
+  province_code?: number;
+  ward_code?: number;
+  listing_type_code?: string;
+  min_price?: number;
+  max_price?: number;
+  min_area?: number;
+  max_area?: number;
+  beds?: number;
+  amenities?: string[];
+  sort_by?: string;
+  centerLat?: number;
+  centerLong?: number;
+  radius?: number;
+  minLat?: number;
+  maxLat?: number;
+  minLng?: number;
+  maxLng?: number;
+}) => {
+  const { amenities, ...rest } = params;
+  let url = `/api/listings/map?`;
+  Object.entries(rest).forEach(([key, value]) => {
+    if (value !== undefined && value !== null && value !== "") {
+      url += `${key}=${value}&`;
+    }
+  });
 
-  if (include_markers) {
-    url += `include_markers=${include_markers}&`;
+  if (amenities && amenities.length > 0) {
+    url += `amenities=${amenities.join(",")}&`;
   }
 
   const res = await api.get(url.slice(0, -1));
