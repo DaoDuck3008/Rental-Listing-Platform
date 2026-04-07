@@ -57,6 +57,8 @@ const STEP = 100; // 100m
 const MIN = 0;
 const MAX = 10000; // 10km
 
+const libraries: "places"[] = ["places"];
+
 export default function MapView({
   listings,
   markers,
@@ -68,7 +70,8 @@ export default function MapView({
 }: MapViewProps) {
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
+    libraries,
   });
 
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);

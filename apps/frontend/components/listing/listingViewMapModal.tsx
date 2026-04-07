@@ -15,6 +15,8 @@ const containerStyle = {
   height: "500px",
 };
 
+const libraries: "places"[] = ["places"];
+
 export default function ListingViewMapModal({
   isOpen,
   onClose,
@@ -22,8 +24,9 @@ export default function ListingViewMapModal({
   address,
 }: ListingViewMapModalProps) {
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!,
-    libraries: ["places"],
+    id: "google-map-script",
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY as string,
+    libraries,
   });
 
   if (!isOpen || !location) return null;
