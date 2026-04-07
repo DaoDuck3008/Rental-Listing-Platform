@@ -1,10 +1,11 @@
 "use client";
 
+import { Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Home, ShieldAlert } from "lucide-react";
 
-export default function ForbiddenPage() {
+function ForbiddenContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const message = searchParams.get("message");
@@ -46,5 +47,13 @@ export default function ForbiddenPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ForbiddenPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-slate-50 flex items-center justify-center">...</div>}>
+      <ForbiddenContent />
+    </Suspense>
   );
 }
