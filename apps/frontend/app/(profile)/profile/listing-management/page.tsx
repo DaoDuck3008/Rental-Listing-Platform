@@ -18,6 +18,7 @@ import { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import { useListingTypes } from "@/hooks/useListingTypes";
 import { handleError } from "@/utils";
+import { useRouter } from "next/navigation";
 
 interface Listing {
   id: string;
@@ -51,6 +52,8 @@ export default function ListingManagementPage() {
   const [page, setPage] = useState<number>(1);
   const [listings, setListings] = useState<Listing[]>([]);
   const [pagination, setPagination] = useState<Pagination | null>(null);
+
+  const router = useRouter();
 
   // Debounce search keyword
   useEffect(() => {
@@ -89,6 +92,12 @@ export default function ListingManagementPage() {
       setPagination(pagination);
     } catch (error: any) {
       handleError(error, "Lỗi không xác định. Vui lòng thử lại sau");
+      if(error?.response?.data?.error === "UNAUTHORIZED"){
+        router.push("/login?redirect=/profile/listing-management");
+      }
+      if(error?.response?.data?.error === "FORBIDDEN"){
+        router.push("/error/403?redirect=/profile&message=Bạn không có quyền truy cập vào trang này hoặc phiên làm việc đã hết hạn. Vui lòng liên hệ quản trị viên hoặc quay lại trang trước.");
+      }
     } finally {
     }
   };
