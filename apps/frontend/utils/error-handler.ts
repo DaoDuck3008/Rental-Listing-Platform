@@ -19,6 +19,11 @@ export const handleError = (error: any, customMessage: string = "Đã có lỗi 
         return;
       }
 
+      if (errorCode === "TOO_MANY_REQUESTS") {
+        toast.warning(message || "Bạn đã gửi quá nhiều yêu cầu. Vui lòng thử lại sau.");
+        return;
+      }
+
       // Đối với các lỗi đã biết thì hiện toast, không log ra console
       toast.error(message || "Đã có lỗi xảy ra");
       return;

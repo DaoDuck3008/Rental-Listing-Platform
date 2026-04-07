@@ -5,6 +5,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import { useAuthStore } from "@/store/auth.store";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
+import { handleError } from "@/utils";
 
 export default function GoogleLoginButton() {
   const setAuth = useAuthStore((s) => s.setAuth);
@@ -22,7 +23,7 @@ export default function GoogleLoginButton() {
           toast.success("Đăng nhập thành công!");
         } catch (error: any) {
           console.error("Google login failed: ", error);
-          toast.error(error?.response?.data?.message || "Đăng nhập thất bại!");
+          handleError(error, "Đăng nhập thất bại!");
         }
       }}
     />
