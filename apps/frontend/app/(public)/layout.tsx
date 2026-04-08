@@ -1,5 +1,5 @@
 import "@/styles/global.css";
-import AppHeader from "@/components/layout/header";
+import AppHeaderWithSearch from "@/components/layout/headerWithSearch";
 import AppFooter from "@/components/layout/footer";
 
 export default function RootLayout({
@@ -9,7 +9,7 @@ export default function RootLayout({
 }>) {
   return (
     <>
-      <AppHeader />
+      <AppHeaderWithSearch />
       <div className="min-h-screen">{children}</div>
       <AppFooter />
     </>

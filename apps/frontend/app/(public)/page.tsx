@@ -17,7 +17,7 @@ import {
   ChevronLeft,
   ChevronRight,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -34,6 +34,9 @@ export default function Home() {
   const router = useRouter();
   const { listingTypes } = useListingTypes();
   const [currentSlide, setCurrentSlide] = useState(0);
+  const newestMobileSliderRef = useRef<HTMLDivElement | null>(null);
+  const featuredMobileSliderRef = useRef<HTMLDivElement | null>(null);
+  const hanoiMobileSliderRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -41,6 +44,69 @@ export default function Home() {
     }, 5000);
     return () => clearInterval(timer);
   }, []);
+
+  useEffect(() => {
+    const sliders = [
+      newestMobileSliderRef.current,
+      featuredMobileSliderRef.current,
+      hanoiMobileSliderRef.current,
+    ].filter(Boolean) as HTMLDivElement[];
+
+    if (!sliders.length) return;
+
+    const cleanups = sliders.map((slider) => {
+      let intervalId: number | null = null;
+      let resumeTimeout: number | null = null;
+
+      const startAutoScroll = () => {
+        intervalId = window.setInterval(() => {
+          const maxScrollLeft = slider.scrollWidth - slider.clientWidth;
+          if (maxScrollLeft <= 0) return;
+
+          if (slider.scrollLeft >= maxScrollLeft - 1) {
+            slider.scrollTo({ left: 0, behavior: "auto" });
+            return;
+          }
+
+          slider.scrollBy({ left: 1, behavior: "auto" });
+        }, 28);
+      };
+
+      const stopAutoScroll = () => {
+        if (intervalId !== null) {
+          window.clearInterval(intervalId);
+          intervalId = null;
+        }
+      };
+
+      const resumeAutoScroll = () => {
+        if (resumeTimeout !== null) window.clearTimeout(resumeTimeout);
+        resumeTimeout = window.setTimeout(() => {
+          if (intervalId === null) startAutoScroll();
+        }, 1500);
+      };
+
+      startAutoScroll();
+
+      slider.addEventListener("touchstart", stopAutoScroll, { passive: true });
+      slider.addEventListener("touchend", resumeAutoScroll, { passive: true });
+      slider.addEventListener("mousedown", stopAutoScroll);
+      slider.addEventListener("mouseup", resumeAutoScroll);
+      slider.addEventListener("mouseleave", resumeAutoScroll);
+
+      return () => {
+        stopAutoScroll();
+        if (resumeTimeout !== null) window.clearTimeout(resumeTimeout);
+        slider.removeEventListener("touchstart", stopAutoScroll);
+        slider.removeEventListener("touchend", resumeAutoScroll);
+        slider.removeEventListener("mousedown", stopAutoScroll);
+        slider.removeEventListener("mouseup", resumeAutoScroll);
+        slider.removeEventListener("mouseleave", resumeAutoScroll);
+      };
+    });
+
+    return () => cleanups.forEach((cleanup) => cleanup());
+  }, [newestListings.length, featuredListings.length, hanoiListings.length]);
 
   const priceOptions = [
     { label: "Tất cả mức giá", value: null },
@@ -104,7 +170,7 @@ export default function Home() {
       <div>
         {/* First section with search bar  */}
         <section className="relative w-full">
-          <div className="w-full h-140 relative flex items-center justify-center bg-slate-900">
+          <div className="relative flex min-h-[540px] w-full items-center justify-center bg-slate-900 md:min-h-[620px]">
             <div
               className="absolute inset-0 z-0 w-full h-full bg-cover bg-center"
               data-alt="Nội thất phòng khách hiện đại, sáng sủa với cửa sổ lớn và ánh nắng"
@@ -115,23 +181,23 @@ export default function Home() {
                   ), url('/HomePageBG.png')`,
               }}
             ></div>
-            <div className="relative z-10 w-full max-w-240 px-4 flex flex-col items-center text-center gap-8">
-              <div className="space-y-4">
-                <h1 className="text-white text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight drop-shadow-sm">
+            <div className="relative z-10 flex w-full max-w-7xl flex-col items-center gap-5 px-3 text-center sm:gap-8 sm:px-4 md:px-8">
+              <div className="space-y-3 md:space-y-4">
+                <h1 className="text-3xl font-black leading-tight tracking-tight text-white drop-shadow-sm sm:text-4xl md:text-5xl lg:text-6xl">
                   Khám phá nơi bạn muốn sống
                 </h1>
-                <h2 className="text-slate-200 text-lg md:text-xl font-medium max-w-2xl mx-auto">
+                <h2 className="mx-auto max-w-2xl text-base font-medium text-slate-200 sm:text-lg md:text-xl">
                   Tìm kiếm hơn 1 triệu căn hộ, nhà ở và chung cư cho thuê từ các
                   chủ nhà đáng tin cậy.
                 </h2>
               </div>
-              <div className="w-full max-w-200 bg-white  rounded-2xl shadow-xl p-2 md:p-3 flex flex-col md:flex-row gap-2 md:gap-0 md:items-center">
-                <div className="flex-1 flex items-center px-4 h-12 md:h-auto border-b md:border-b-0 md:border-r border-slate-200 ">
+              <div className="mx-1 mt-1 flex w-full max-w-5xl flex-col gap-2 rounded-2xl bg-white p-2.5 shadow-xl sm:mx-0 sm:p-3 md:mt-0 md:flex-row md:items-center md:gap-0">
+                <div className="flex h-11 py-2 md:py-0 flex-1 items-center border-b border-slate-200 px-2.5 sm:h-12 sm:px-4 md:h-auto md:border-b-0 md:border-r">
                   <span className="material-symbols-outlined text-slate-400 mr-3">
                     <Search />
                   </span>
                   <input
-                    className="w-full bg-transparent border-transparent online-none focus:outline-none text-slate-500  placeholder-slate-400 text-base font-medium p-0"
+                    className="w-full bg-transparent border-transparent p-0 text-sm font-medium text-slate-500 placeholder-slate-400 online-none focus:outline-none sm:text-base"
                     placeholder="Thành phố, Mã bưu điện, hoặc Khu vực"
                     type="text"
                     value={keyword}
@@ -141,7 +207,7 @@ export default function Home() {
                     onChange={(e) => setKeyword(e.target.value)}
                   />
                 </div>
-                <div className="hidden md:flex items-center gap-2 px-4">
+                <div className="hidden items-center gap-2 px-4 md:flex">
                   <div className="relative group">
                     <Dropdown
                       title="Giá"
@@ -159,9 +225,9 @@ export default function Home() {
                     />
                   </div>
                 </div>
-                <div className="flex md:hidden gap-2 pb-2">
+                <div className="flex gap-2 px-0.5 pb-1 md:hidden">
                   <select
-                    className="flex-1 bg-slate-50  border-none rounded-lg text-sm p-2 text-slate-700 "
+                    className="min-w-0 flex-1 rounded-lg border-none bg-slate-50 p-2 text-sm text-slate-700"
                     value={
                       priceRange
                         ? JSON.stringify(priceRange)
@@ -179,7 +245,7 @@ export default function Home() {
                     ))}
                   </select>
                   <select
-                    className="flex-1 bg-slate-50  border-none rounded-lg text-sm p-2 text-slate-700 "
+                    className="min-w-0 flex-1 rounded-lg border-none bg-slate-50 p-2 text-sm text-slate-700"
                     value={typeCode}
                     onChange={(e) => setTypeCode(e.target.value)}
                   >
@@ -192,7 +258,7 @@ export default function Home() {
                 </div>
                 <button
                   onClick={handleSearch}
-                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold h-12 md:h-12 px-8 rounded-xl transition-all shadow-lg shadow-blue-500/20 w-full md:w-auto flex items-center justify-center gap-2"
+                  className="flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-blue-500 px-5 text-sm font-bold text-white shadow-lg shadow-blue-500/20 transition-all hover:bg-blue-600 sm:h-12 sm:px-8 sm:text-base md:w-auto"
                 >
                   Tìm kiếm
                 </button>
@@ -202,9 +268,9 @@ export default function Home() {
         </section>
 
         {/* Second section: Famous City */}
-        <section className="py-12 bg-white  border-slate-100 ">
+        <section className="border-slate-100 bg-white py-10 md:py-12">
           <div className="max-w-7xl mx-auto px-4 md:px-10">
-            <h3 className="text-slate-900  text-lg font-bold mb-6">
+            <h3 className="mb-4 text-base font-bold text-slate-900 sm:mb-6 sm:text-lg">
               Địa điểm phổ biến
             </h3>
             <div className="flex gap-4 overflow-x-auto no-scrollbar pb-2">
@@ -228,17 +294,17 @@ export default function Home() {
         </section>
 
         {/* Third section: Newest listings */}
-        <section className="py-5 max-w-7xl mx-auto px-5 md:px-10">
-          <div className="flex items-end justify-between mb-6">
-            <div className="flex items-center gap-4">
-              <div className="p-3 bg-blue-100 rounded-2xl text-blue-600">
-                <Sparkles className="w-8 h-8" />
+        <section className="mx-auto max-w-7xl px-4 py-5 sm:px-5 md:px-10">
+          <div className="mb-6 flex items-end justify-between">
+            <div className="flex items-start gap-3 sm:items-center sm:gap-4">
+              <div className="rounded-2xl bg-blue-100 p-2.5 text-blue-600 sm:p-3">
+                <Sparkles className="h-6 w-6 sm:h-8 sm:w-8" />
               </div>
               <div>
-                <h2 className="text-3xl font-bold text-slate-900 ">
+                <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
                   Tin đăng mới nhất
                 </h2>
-                <p className="text-slate-500 ">
+                <p className="text-sm text-slate-500 sm:text-base">
                   Những bất động sản mới được thêm hôm nay trong khu vực của bạn.
                 </p>
               </div>
@@ -254,58 +320,81 @@ export default function Home() {
             </Link>
           </div>
           {/* Slider Container */}
-          <div className="relative group pb-4">
-            <div className="overflow-hidden relative">
-              <div
-                className="flex transition-transform duration-1000 ease-in-out"
-                style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-              >
-                {[0, 1].map((slideIdx) => (
-                  <div key={slideIdx} className="w-full flex-shrink-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {newestListings && newestListings.length > 0 ? (
-                      newestListings.slice(slideIdx * 3, (slideIdx + 1) * 3).map((listing: any) => (
-                        <ListingCard
-                          key={listing.id}
-                          id={listing.id}
-                          title={listing.title}
-                          price={listing.price}
-                          address={listing.address}
-                          imgUrl={listing.images[0].image_url || "./NoImage.png"}
-                          beds={listing.bedrooms}
-                          baths={listing.bathrooms}
-                          area={listing.area}
-                          status={listing.status}
-                        />
-                      ))
-                    ) : (
-                      <p className="py-10 text-center col-span-full">Không có tin đăng nào để hiển thị.</p>
-                    )}
+          <div className="pb-4">
+            <div ref={newestMobileSliderRef} className="flex gap-4 overflow-x-auto pb-2 md:hidden">
+              {newestListings && newestListings.length > 0 ? (
+                newestListings.map((listing: any) => (
+                  <div key={listing.id} className="min-w-[85vw] max-w-[85vw] shrink-0">
+                    <ListingCard
+                      id={listing.id}
+                      title={listing.title}
+                      price={listing.price}
+                      address={listing.address}
+                      imgUrl={listing.images[0].image_url || "./NoImage.png"}
+                      beds={listing.bedrooms}
+                      baths={listing.bathrooms}
+                      area={listing.area}
+                      status={listing.status}
+                    />
                   </div>
-                ))}
+                ))
+              ) : (
+                <p className="col-span-full py-10 text-center">Không có tin đăng nào để hiển thị.</p>
+              )}
+            </div>
+            <div className="relative hidden group md:block">
+              <div className="relative overflow-hidden">
+                <div
+                  className="flex transition-transform duration-1000 ease-in-out"
+                  style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+                >
+                  {[0, 1].map((slideIdx) => (
+                    <div key={slideIdx} className="grid w-full flex-shrink-0 grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
+                      {newestListings && newestListings.length > 0 ? (
+                        newestListings.slice(slideIdx * 3, (slideIdx + 1) * 3).map((listing: any) => (
+                          <ListingCard
+                            key={listing.id}
+                            id={listing.id}
+                            title={listing.title}
+                            price={listing.price}
+                            address={listing.address}
+                            imgUrl={listing.images[0].image_url || "./NoImage.png"}
+                            beds={listing.bedrooms}
+                            baths={listing.bathrooms}
+                            area={listing.area}
+                            status={listing.status}
+                          />
+                        ))
+                      ) : (
+                        <p className="col-span-full py-10 text-center">Không có tin đăng nào để hiển thị.</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Manual Controls */}
+              <button
+                onClick={() => setCurrentSlide((prev) => (prev === 0 ? 1 : 0))}
+                className="absolute left-[-20px] top-1/2 z-20 hidden -translate-y-1/2 rounded-full border border-slate-100 bg-white p-3 text-slate-400 opacity-0 shadow-lg transition-all group-hover:opacity-100 hover:border-blue-500 hover:text-blue-500 md:block"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </button>
+              <button
+                onClick={() => setCurrentSlide((prev) => (prev === 0 ? 1 : 0))}
+                className="absolute right-[-20px] top-1/2 z-20 hidden -translate-y-1/2 rounded-full border border-slate-100 bg-white p-3 text-slate-400 opacity-0 shadow-lg transition-all group-hover:opacity-100 hover:border-blue-500 hover:text-blue-500 md:block"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </button>
+
+              {/* Pagination Dots */}
+              <div className="mt-6 flex justify-center gap-2">
+                <div onClick={() => setCurrentSlide(0)} className={`h-2 rounded-full cursor-pointer transition-all duration-300 ${currentSlide === 0 ? "w-8 bg-blue-500" : "w-2 bg-slate-300"}`} />
+                <div onClick={() => setCurrentSlide(1)} className={`h-2 rounded-full cursor-pointer transition-all duration-300 ${currentSlide === 1 ? "w-8 bg-blue-500" : "w-2 bg-slate-300"}`} />
               </div>
             </div>
-
-            {/* Manual Controls */}
-            <button
-              onClick={() => setCurrentSlide((prev) => (prev === 0 ? 1 : 0))}
-              className="absolute left-[-20px] top-1/2 -translate-y-1/2 bg-white p-3 rounded-full shadow-lg border border-slate-100 text-slate-400 hover:text-blue-500 hover:border-blue-500 transition-all opacity-0 group-hover:opacity-100 hidden md:block z-20"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </button>
-            <button
-              onClick={() => setCurrentSlide((prev) => (prev === 0 ? 1 : 0))}
-              className="absolute right-[-20px] top-1/2 -translate-y-1/2 bg-white p-3 rounded-full shadow-lg border border-slate-100 text-slate-400 hover:text-blue-500 hover:border-blue-500 transition-all opacity-0 group-hover:opacity-100 hidden md:block z-20"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </button>
-
-            {/* Pagination Dots */}
-            <div className="flex justify-center gap-2 mt-6">
-              <div onClick={() => setCurrentSlide(0)} className={`h-2 rounded-full cursor-pointer transition-all duration-300 ${currentSlide === 0 ? "w-8 bg-blue-500" : "w-2 bg-slate-300"}`} />
-              <div onClick={() => setCurrentSlide(1)} className={`h-2 rounded-full cursor-pointer transition-all duration-300 ${currentSlide === 1 ? "w-8 bg-blue-500" : "w-2 bg-slate-300"}`} />
-            </div>
           </div>
-          <div className="mt-8 flex justify-center md:hidden">
+          <div className="mt-6 flex justify-center md:hidden">
             <Link
               href="/listings?sort_by=DATE_DESC"
               className="w-full py-3 border border-slate-300 flex justify-center rounded-lg text-slate-900  font-bold hover:bg-slate-50 "
@@ -315,18 +404,18 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="py-5 bg-slate-50/50">
-          <div className="max-w-7xl mx-auto px-5 md:px-10">
-            <div className="flex items-end justify-between mb-8">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-orange-100 rounded-2xl text-orange-600">
-                  <Flame className="w-8 h-8" />
+        <section className="bg-slate-50/50 py-5">
+          <div className="mx-auto max-w-7xl px-4 sm:px-5 md:px-10">
+            <div className="mb-8 flex items-end justify-between">
+              <div className="flex items-start gap-3 sm:items-center sm:gap-4">
+                <div className="rounded-2xl bg-orange-100 p-2.5 text-orange-600 sm:p-3">
+                  <Flame className="h-6 w-6 sm:h-8 sm:w-8" />
                 </div>
                 <div>
-                  <h2 className="text-3xl font-bold text-slate-900 ">
+                  <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
                     Tin đăng nổi bật
                   </h2>
-                  <p className="text-slate-500 ">
+                  <p className="text-sm text-slate-500 sm:text-base">
                     Những bất động sản được xem nhiều nhất.
                   </p>
                 </div>
@@ -342,72 +431,95 @@ export default function Home() {
               </Link>
             </div>
             {/* Slider Container */}
-            <div className="relative group pb-4">
-              <div className="overflow-hidden relative">
-                <div
-                  className="flex transition-transform duration-1000 ease-in-out"
-                  style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-                >
-                  {[0, 1].map((slideIdx) => (
-                    <div key={slideIdx} className="w-full flex-shrink-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {featuredListings && featuredListings.length > 0 ? (
-                        featuredListings.slice(slideIdx * 3, (slideIdx + 1) * 3).map((listing: any) => (
-                          <ListingCard
-                            key={listing.id}
-                            id={listing.id}
-                            title={listing.title}
-                            price={listing.price}
-                            address={listing.address}
-                            imgUrl={listing.images[0].image_url || "./NoImage.png"}
-                            beds={listing.bedrooms}
-                            baths={listing.bathrooms}
-                            area={listing.area}
-                            status={listing.status}
-                          />
-                        ))
-                      ) : (
-                        <p className="py-10 text-center col-span-full">Không có tin đăng nào để hiển thị.</p>
-                      )}
+            <div className="pb-4">
+            <div ref={featuredMobileSliderRef} className="flex gap-4 overflow-x-auto pb-2 md:hidden">
+                {featuredListings && featuredListings.length > 0 ? (
+                  featuredListings.map((listing: any) => (
+                    <div key={listing.id} className="min-w-[85vw] max-w-[85vw] shrink-0">
+                      <ListingCard
+                        id={listing.id}
+                        title={listing.title}
+                        price={listing.price}
+                        address={listing.address}
+                        imgUrl={listing.images[0].image_url || "./NoImage.png"}
+                        beds={listing.bedrooms}
+                        baths={listing.bathrooms}
+                        area={listing.area}
+                        status={listing.status}
+                      />
                     </div>
-                  ))}
-                </div>
+                  ))
+                ) : (
+                  <p className="col-span-full py-10 text-center">Không có tin đăng nào để hiển thị.</p>
+                )}
               </div>
+              <div className="relative hidden group md:block">
+                <div className="relative overflow-hidden">
+                  <div
+                    className="flex transition-transform duration-1000 ease-in-out"
+                    style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+                  >
+                    {[0, 1].map((slideIdx) => (
+                      <div key={slideIdx} className="grid w-full flex-shrink-0 grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
+                        {featuredListings && featuredListings.length > 0 ? (
+                          featuredListings.slice(slideIdx * 3, (slideIdx + 1) * 3).map((listing: any) => (
+                            <ListingCard
+                              key={listing.id}
+                              id={listing.id}
+                              title={listing.title}
+                              price={listing.price}
+                              address={listing.address}
+                              imgUrl={listing.images[0].image_url || "./NoImage.png"}
+                              beds={listing.bedrooms}
+                              baths={listing.bathrooms}
+                              area={listing.area}
+                              status={listing.status}
+                            />
+                          ))
+                        ) : (
+                          <p className="col-span-full py-10 text-center">Không có tin đăng nào để hiển thị.</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
-              {/* Manual Controls */}
-              <button
-                onClick={() => setCurrentSlide((prev) => (prev === 0 ? 1 : 0))}
-                className="absolute left-[-20px] top-1/2 -translate-y-1/2 bg-white p-3 rounded-full shadow-lg border border-slate-100 text-slate-400 hover:text-orange-500 hover:border-orange-500 transition-all opacity-0 group-hover:opacity-100 hidden md:block z-20"
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
-              <button
-                onClick={() => setCurrentSlide((prev) => (prev === 0 ? 1 : 0))}
-                className="absolute right-[-20px] top-1/2 -translate-y-1/2 bg-white p-3 rounded-full shadow-lg border border-slate-100 text-slate-400 hover:text-orange-500 hover:border-orange-500 transition-all opacity-0 group-hover:opacity-100 hidden md:block z-20"
-              >
-                <ChevronRight className="w-6 h-6" />
-              </button>
+                {/* Manual Controls */}
+                <button
+                  onClick={() => setCurrentSlide((prev) => (prev === 0 ? 1 : 0))}
+                  className="absolute left-[-20px] top-1/2 z-20 hidden -translate-y-1/2 rounded-full border border-slate-100 bg-white p-3 text-slate-400 opacity-0 shadow-lg transition-all group-hover:opacity-100 hover:border-orange-500 hover:text-orange-500 md:block"
+                >
+                  <ChevronLeft className="h-6 w-6" />
+                </button>
+                <button
+                  onClick={() => setCurrentSlide((prev) => (prev === 0 ? 1 : 0))}
+                  className="absolute right-[-20px] top-1/2 z-20 hidden -translate-y-1/2 rounded-full border border-slate-100 bg-white p-3 text-slate-400 opacity-0 shadow-lg transition-all group-hover:opacity-100 hover:border-orange-500 hover:text-orange-500 md:block"
+                >
+                  <ChevronRight className="h-6 w-6" />
+                </button>
 
-              {/* Pagination Dots */}
-              <div className="flex justify-center gap-2 mt-6">
-                <div onClick={() => setCurrentSlide(0)} className={`h-2 rounded-full cursor-pointer transition-all duration-300 ${currentSlide === 0 ? "w-8 bg-orange-500" : "w-2 bg-slate-300"}`} />
-                <div onClick={() => setCurrentSlide(1)} className={`h-2 rounded-full cursor-pointer transition-all duration-300 ${currentSlide === 1 ? "w-8 bg-orange-500" : "w-2 bg-slate-300"}`} />
+                {/* Pagination Dots */}
+                <div className="mt-6 flex justify-center gap-2">
+                  <div onClick={() => setCurrentSlide(0)} className={`h-2 rounded-full cursor-pointer transition-all duration-300 ${currentSlide === 0 ? "w-8 bg-orange-500" : "w-2 bg-slate-300"}`} />
+                  <div onClick={() => setCurrentSlide(1)} className={`h-2 rounded-full cursor-pointer transition-all duration-300 ${currentSlide === 1 ? "w-8 bg-orange-500" : "w-2 bg-slate-300"}`} />
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         <section className="py-5">
-          <div className="max-w-7xl mx-auto px-5 md:px-10">
-            <div className="flex items-end justify-between mb-8">
-              <div className="flex items-center gap-4">
-                <div className="p-3 bg-red-100 rounded-2xl text-red-600">
-                  <MapPin className="w-8 h-8" />
+          <div className="mx-auto max-w-7xl px-4 sm:px-5 md:px-10">
+            <div className="mb-8 flex items-end justify-between">
+              <div className="flex items-start gap-3 sm:items-center sm:gap-4">
+                <div className="rounded-2xl bg-red-100 p-2.5 text-red-600 sm:p-3">
+                  <MapPin className="h-6 w-6 sm:h-8 sm:w-8" />
                 </div>
                 <div>
-                  <h2 className="text-3xl font-bold text-slate-900 ">
+                  <h2 className="text-2xl font-bold text-slate-900 sm:text-3xl">
                     Tin đăng tại Hà Nội
                   </h2>
-                  <p className="text-slate-500 ">
+                  <p className="text-sm text-slate-500 sm:text-base">
                     Tìm kiếm nơi ở lý tưởng tại thủ đô.
                   </p>
                 </div>
@@ -423,73 +535,96 @@ export default function Home() {
               </Link>
             </div>
             {/* Slider Container */}
-            <div className="relative group pb-4">
-              <div className="overflow-hidden relative">
-                <div
-                  className="flex transition-transform duration-1000 ease-in-out"
-                  style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-                >
-                  {[0, 1].map((slideIdx) => (
-                    <div key={slideIdx} className="w-full flex-shrink-0 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {hanoiListings && hanoiListings.length > 0 ? (
-                        hanoiListings.slice(slideIdx * 3, (slideIdx + 1) * 3).map((listing: any) => (
-                          <ListingCard
-                            key={listing.id}
-                            id={listing.id}
-                            title={listing.title}
-                            price={listing.price}
-                            address={listing.address}
-                            imgUrl={listing.images[0].image_url || "./NoImage.png"}
-                            beds={listing.bedrooms}
-                            baths={listing.bathrooms}
-                            area={listing.area}
-                            status={listing.status}
-                          />
-                        ))
-                      ) : (
-                        <p className="py-10 text-center col-span-full">Không có tin đăng nào để hiển thị.</p>
-                      )}
+            <div className="pb-4">
+              <div ref={hanoiMobileSliderRef} className="flex gap-4 overflow-x-auto pb-2 md:hidden">
+                {hanoiListings && hanoiListings.length > 0 ? (
+                  hanoiListings.map((listing: any) => (
+                    <div key={listing.id} className="min-w-[85vw] max-w-[85vw] shrink-0">
+                      <ListingCard
+                        id={listing.id}
+                        title={listing.title}
+                        price={listing.price}
+                        address={listing.address}
+                        imgUrl={listing.images[0].image_url || "./NoImage.png"}
+                        beds={listing.bedrooms}
+                        baths={listing.bathrooms}
+                        area={listing.area}
+                        status={listing.status}
+                      />
                     </div>
-                  ))}
-                </div>
+                  ))
+                ) : (
+                  <p className="col-span-full py-10 text-center">Không có tin đăng nào để hiển thị.</p>
+                )}
               </div>
+              <div className="relative hidden group md:block">
+                <div className="relative overflow-hidden">
+                  <div
+                    className="flex transition-transform duration-1000 ease-in-out"
+                    style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+                  >
+                    {[0, 1].map((slideIdx) => (
+                      <div key={slideIdx} className="grid w-full flex-shrink-0 grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-6">
+                        {hanoiListings && hanoiListings.length > 0 ? (
+                          hanoiListings.slice(slideIdx * 3, (slideIdx + 1) * 3).map((listing: any) => (
+                            <ListingCard
+                              key={listing.id}
+                              id={listing.id}
+                              title={listing.title}
+                              price={listing.price}
+                              address={listing.address}
+                              imgUrl={listing.images[0].image_url || "./NoImage.png"}
+                              beds={listing.bedrooms}
+                              baths={listing.bathrooms}
+                              area={listing.area}
+                              status={listing.status}
+                            />
+                          ))
+                        ) : (
+                          <p className="col-span-full py-10 text-center">Không có tin đăng nào để hiển thị.</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
 
-              {/* Manual Controls */}
-              <button
-                onClick={() => setCurrentSlide((prev) => (prev === 0 ? 1 : 0))}
-                className="absolute left-[-20px] top-1/2 -translate-y-1/2 bg-white p-3 rounded-full shadow-lg border border-slate-100 text-slate-400 hover:text-red-500 hover:border-red-500 transition-all opacity-0 group-hover:opacity-100 hidden md:block z-20"
-              >
-                <ChevronLeft className="w-6 h-6" />
-              </button>
-              <button
-                onClick={() => setCurrentSlide((prev) => (prev === 0 ? 1 : 0))}
-                className="absolute right-[-20px] top-1/2 -translate-y-1/2 bg-white p-3 rounded-full shadow-lg border border-slate-100 text-slate-400 hover:text-red-500 hover:border-red-500 transition-all opacity-0 group-hover:opacity-100 hidden md:block z-20"
-              >
-                <ChevronRight className="w-6 h-6" />
-              </button>
+                {/* Manual Controls */}
+                <button
+                  onClick={() => setCurrentSlide((prev) => (prev === 0 ? 1 : 0))}
+                  className="absolute left-[-20px] top-1/2 z-20 hidden -translate-y-1/2 rounded-full border border-slate-100 bg-white p-3 text-slate-400 opacity-0 shadow-lg transition-all group-hover:opacity-100 hover:border-red-500 hover:text-red-500 md:block"
+                >
+                  <ChevronLeft className="h-6 w-6" />
+                </button>
+                <button
+                  onClick={() => setCurrentSlide((prev) => (prev === 0 ? 1 : 0))}
+                  className="absolute right-[-20px] top-1/2 z-20 hidden -translate-y-1/2 rounded-full border border-slate-100 bg-white p-3 text-slate-400 opacity-0 shadow-lg transition-all group-hover:opacity-100 hover:border-red-500 hover:text-red-500 md:block"
+                >
+                  <ChevronRight className="h-6 w-6" />
+                </button>
 
-              {/* Pagination Dots */}
-              <div className="flex justify-center gap-2 mt-6">
-                <div onClick={() => setCurrentSlide(0)} className={`h-2 rounded-full cursor-pointer transition-all duration-300 ${currentSlide === 0 ? "w-8 bg-red-500" : "w-2 bg-slate-300"}`} />
-                <div onClick={() => setCurrentSlide(1)} className={`h-2 rounded-full cursor-pointer transition-all duration-300 ${currentSlide === 1 ? "w-8 bg-red-500" : "w-2 bg-slate-300"}`} />
+                {/* Pagination Dots */}
+                <div className="mt-6 flex justify-center gap-2">
+                  <div onClick={() => setCurrentSlide(0)} className={`h-2 rounded-full cursor-pointer transition-all duration-300 ${currentSlide === 0 ? "w-8 bg-red-500" : "w-2 bg-slate-300"}`} />
+                  <div onClick={() => setCurrentSlide(1)} className={`h-2 rounded-full cursor-pointer transition-all duration-300 ${currentSlide === 1 ? "w-8 bg-red-500" : "w-2 bg-slate-300"}`} />
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         {/* Fourth Section: Why choose us? */}
-        <section className="py-20 bg-white ">
+        <section className="bg-white py-14 md:py-20">
           <div className="max-w-7xl mx-auto px-4 md:px-10">
-            <div className="text-center max-w-2xl mx-auto mb-16">
-              <h2 className="text-3xl font-bold text-slate-900  mb-4">
+            <div className="mx-auto mb-10 max-w-2xl text-center md:mb-16">
+              <h2 className="mb-3 text-2xl font-bold text-slate-900 sm:mb-4 sm:text-3xl">
                 Tại sao chọn RentalHome?
               </h2>
-              <p className="text-slate-500  text-lg">
+              <p className="text-base text-slate-500 sm:text-lg">
                 Chúng tôi giúp việc tìm kiếm ngôi nhà tiếp theo của bạn trở nên
                 đơn giản, an toàn và thoải mái.
               </p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            <div className="grid grid-cols-1 gap-8 sm:gap-10 md:grid-cols-3 md:gap-12">
               <RecommendCard
                 icon={ShieldCheck}
                 title="Chủ nhà đã xác thực"
@@ -510,25 +645,25 @@ export default function Home() {
         </section>
 
         {/* Fifth Section: Asking owner */}
-        <section className="py-16">
+        <section className="py-12 md:py-16">
           <div className="max-w-7xl mx-auto px-4 md:px-10">
-            <div className="bg-blue-500 rounded-3xl p-8 md:p-16 flex flex-col md:flex-row items-center justify-between gap-8 text-center md:text-left shadow-2xl shadow-blue-500/20 overflow-hidden relative">
+            <div className="relative flex flex-col items-center justify-between gap-6 overflow-hidden rounded-3xl bg-blue-500 p-6 text-center shadow-2xl shadow-blue-500/20 md:flex-row md:gap-8 md:p-12 md:text-left lg:p-16">
               <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16 pointer-events-none"></div>
               <div className="relative z-10 max-w-xl">
-                <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+                <h2 className="mb-3 text-2xl font-bold text-white sm:mb-4 sm:text-3xl md:text-4xl">
                   Bạn là chủ nhà?
                 </h2>
-                <p className="text-blue-100 text-lg">
+                <p className="text-base text-blue-100 sm:text-lg">
                   Đăng tin miễn phí và tiếp cận hàng triệu người thuê. Các công
                   cụ của chúng tôi giúp quản lý hồ sơ dễ dàng.
                 </p>
               </div>
-              <div className="relative z-10 flex flex-col sm:flex-row gap-4">
+              <div className="relative z-10 flex w-full flex-col gap-3 sm:w-auto sm:flex-row sm:gap-4">
                 <PostButton
                   title="Đăng tin bất động sản của bạn"
-                  className="bg-white text-blue-500 font-bold h-14 px-8 rounded-xl hover:bg-slate-50 hover:-translate-y-1 transition shadow-lg cursor-pointer"
+                  className="h-12 w-full cursor-pointer rounded-xl bg-white px-5 text-sm font-bold text-blue-500 shadow-lg transition hover:-translate-y-1 hover:bg-slate-50 sm:h-14 sm:w-auto sm:px-8 sm:text-base"
                 />
-                <button className="bg-blue-600 text-white  font-bold h-14 px-8 rounded-xl hover:bg-blue-700 hover:-translate-y-1 transition cursor-pointer">
+                <button className="h-12 w-full cursor-pointer rounded-xl bg-blue-600 px-5 text-sm font-bold text-white transition hover:-translate-y-1 hover:bg-blue-700 sm:h-14 sm:w-auto sm:px-8 sm:text-base">
                   Tìm Hiểu Thêm
                 </button>
               </div>

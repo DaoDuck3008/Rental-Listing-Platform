@@ -76,7 +76,7 @@ export default function NearbyDestinations({ listingId }: { listingId: string })
             <SkeletonLoader type="text" className="w-32 bg-green-100 h-2" />
           </div>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+        <div className="grid grid-cols-2 gap-x-4 gap-y-3 md:gap-x-8 md:gap-y-4">
           <SkeletonLoader type="nearby" count={6} />
         </div>
       </div>
@@ -86,35 +86,35 @@ export default function NearbyDestinations({ listingId }: { listingId: string })
   if (destinations.length === 0) return null;
 
   return (
-    <div className="mt-8 bg-green-50 border border-green-200 rounded-xl p-6 shadow-sm">
-      <div className="flex items-center gap-2 mb-4">
-        <div className="size-10 rounded-full bg-green-100 flex items-center justify-center text-green-700">
+    <div className="mt-8 rounded-xl border border-green-200 bg-green-50 p-4 shadow-sm sm:p-6">
+      <div className="mb-4 flex items-center gap-2">
+        <div className="flex size-9 items-center justify-center rounded-full bg-green-100 text-green-700 sm:size-10">
           <Navigation size={22} />
         </div>
         <div>
-          <h3 className="text-lg font-bold text-slate-900">10 Tiện ích lân cận</h3>
-          <p className="text-[11px] font-medium text-green-600 uppercase tracking-wider flex items-center gap-1">
+          <h3 className="text-base font-bold text-slate-900 sm:text-lg">10 Tiện ích lân cận</h3>
+          <p className="flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-green-600 sm:text-[11px]">
             <MapIcon size={12} />
             Khoảng cách được tính toán theo đường trên không
           </p>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4">
+      <div className="grid max-h-72 grid-cols-2 gap-x-3 gap-y-2.5 overflow-y-auto pr-1 sm:max-h-80 sm:gap-x-6 sm:gap-y-3">
         {destinations.map((item) => (
           <div 
             key={item.id} 
-            className="flex items-center justify-between py-2 border-b border-green-100 last:border-0 group transition-all"
+            className="group flex items-center justify-between border-b border-green-100 py-1.5 transition-all last:border-0 sm:py-2"
           >
-            <div className="flex items-center gap-3 overflow-hidden">
-              <div className="shrink-0 size-8 rounded-lg bg-white border border-green-100 flex items-center justify-center shadow-xs">
+            <div className="flex items-center gap-2 overflow-hidden sm:gap-3">
+              <div className="flex size-7 shrink-0 items-center justify-center rounded-lg border border-green-100 bg-white shadow-xs sm:size-8">
                 {getDestinationIcon(item.type)}
               </div>
-              <span className="text-sm font-bold text-slate-700 truncate group-hover:text-green-700 transition-colors">
+              <span className="truncate text-xs font-bold text-slate-700 transition-colors group-hover:text-green-700 sm:text-sm">
                 {item.name}
               </span>
             </div>
-            <span className="shrink-0 text-xs font-black text-green-700 bg-white px-2 py-1 rounded-md border border-green-100 shadow-xs ml-4">
+            <span className="ml-2 shrink-0 rounded-md border border-green-100 bg-white px-1.5 py-1 text-[10px] font-black text-green-700 shadow-xs sm:ml-3 sm:px-2 sm:text-xs">
               {formatDistance(item.distance)}
             </span>
           </div>

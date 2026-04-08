@@ -121,7 +121,7 @@ export default function ListingDetailPage() {
   const images = listing.images?.map((img: any) => img.image_url) || [];
 
   return (
-    <main className="grow layout-container flex flex-col w-full max-w-360 mx-auto px-4 sm:px-6 lg:px-10 py-5">
+    <main className="layout-container mx-auto flex w-full max-w-360 grow flex-col px-3 py-4 sm:px-6 sm:py-5 lg:px-10">
       {/* Back button */}
       <BackButton />
 
@@ -133,24 +133,24 @@ export default function ListingDetailPage() {
       />
 
       {/* Hero Gallery */}
-      <section className="mt-6">
+      <section className="mt-4 sm:mt-6">
         <ListingGallery images={images} />
       </section>
 
       {/* Main Content */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-6">
-        <div className="mt-4 lg:col-span-2 flex flex-col gap-8">
+      <div className="mt-5 grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
+        <div className="mt-2 flex flex-col gap-6 lg:col-span-2 lg:gap-8">
           {/* Title and Location */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-3 flex flex-col gap-8">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
+            <div className="flex flex-col gap-6 lg:col-span-3 lg:gap-8">
               <div className="flex flex-col gap-4">
-                <div className="flex justify-between items-start gap-4">
+                <div className="flex items-start justify-between gap-3 sm:gap-4">
                   <div className="flex flex-col gap-2">
-                    <h1 className="text-3xl md:text-4xl font-black leading-tight tracking-[-0.02em] text-slate-900">
+                    <h1 className="text-2xl font-black leading-tight tracking-[-0.02em] text-slate-900 sm:text-3xl md:text-4xl">
                       {listing.title}
                     </h1>
-                    <p className="text-slate-500 text-base font-normal flex items-center gap-1">
-                      <MapPin size={18} className="text-slate-400" />
+                    <p className="flex items-center gap-1 text-sm font-normal text-slate-500 sm:text-base">
+                      <MapPin size={16} className="text-slate-400 sm:size-[18px]" />
                       {listing.address}
                     </p>
                   </div>
@@ -159,20 +159,20 @@ export default function ListingDetailPage() {
                     Đã xác thực
                   </button>
                 </div>
-                <div className="flex gap-3 flex-wrap">
-                  <div className="flex h-10 items-center gap-x-2 rounded-lg bg-slate-100 px-4 text-slate-700">
+                <div className="-mx-1 flex flex-nowrap gap-2 overflow-x-auto px-1 pb-1 sm:mx-0 sm:flex-wrap sm:gap-3 sm:px-0">
+                  <div className="flex h-9 shrink-0 items-center gap-x-2 rounded-lg bg-slate-100 px-3 text-slate-700 sm:h-10 sm:px-4">
                     <Bed size={18} className="text-[#92adc9]" />
                     <p className="text-sm font-bold">{listing.beds} PN</p>
                   </div>
-                  <div className="flex h-10 items-center gap-x-2 rounded-lg bg-slate-100 px-4 text-slate-700">
+                  <div className="flex h-9 shrink-0 items-center gap-x-2 rounded-lg bg-slate-100 px-3 text-slate-700 sm:h-10 sm:px-4">
                     <Bath size={18} className="text-[#92adc9]" />
                     <p className="text-sm font-bold">{listing.baths} WC</p>
                   </div>
-                  <div className="flex h-10 items-center gap-x-2 rounded-lg bg-slate-100 px-4 text-slate-700">
+                  <div className="flex h-9 shrink-0 items-center gap-x-2 rounded-lg bg-slate-100 px-3 text-slate-700 sm:h-10 sm:px-4">
                     <TriangleRight size={18} className="text-[#92adc9]" />
                     <p className="text-sm font-bold">{listing.area} m²</p>
                   </div>
-                  <div className="flex h-10 items-center gap-x-2 rounded-lg bg-slate-100 px-4 text-slate-700">
+                  <div className="flex h-9 shrink-0 items-center gap-x-2 rounded-lg bg-slate-100 px-3 text-slate-700 sm:h-10 sm:px-4">
                     <CalendarDays size={18} className="text-[#92adc9]" />
                     <p className="text-sm font-bold">Có sẵn ngay</p>
                   </div>
@@ -182,14 +182,14 @@ export default function ListingDetailPage() {
           </div>
 
           {/* Description */}
-          <div className="h-px bg-slate-200 w-full mt-6"></div>
-          <div className="flex flex-col gap-3 mt-6">
+          <div className="mt-4 h-px w-full bg-slate-200 sm:mt-6"></div>
+          <div className="mt-4 flex flex-col gap-3 sm:mt-6">
             <h3 className="text-xl font-bold text-slate-900">
               Thông tin mô tả
             </h3>
             <div className="relative">
               <div
-                className={`text-slate-600 leading-relaxed prose prose-slate max-w-none transition-all duration-500 overflow-hidden ${
+                className={`prose prose-slate max-w-none overflow-hidden leading-relaxed text-slate-600 transition-all duration-500 ${
                   isExpanded ? "max-h-1250" : "max-h-50"
                 }`}
                 dangerouslySetInnerHTML={{ __html: listing.description }}
@@ -213,12 +213,12 @@ export default function ListingDetailPage() {
           </div>
 
           {/* Amenities */}
-          <div className="h-px bg-slate-200 w-full mt-6"></div>
+          <div className="mt-4 h-px w-full bg-slate-200 sm:mt-6"></div>
           <div className="flex flex-col gap-4">
-            <h3 className="text-xl font-bold text-slate-900 mt-6">
+            <h3 className="mt-4 text-xl font-bold text-slate-900 sm:mt-6">
               Tiện nghi chỗ ở
             </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-y-4 gap-x-8">
+            <div className="grid grid-cols-1 gap-x-6 gap-y-3.5 min-[420px]:grid-cols-2 sm:grid-cols-3 sm:gap-y-4 sm:gap-x-8">
               {listing.amenities?.map((amenity: any) => (
                 <div
                   key={amenity.id}
@@ -237,8 +237,8 @@ export default function ListingDetailPage() {
           </div>
 
           {/* Location */}
-          <div className="h-px bg-slate-200 w-full mt-6"></div>
-          <div className="flex flex-col gap-4 mt-6">
+          <div className="mt-4 h-px w-full bg-slate-200 sm:mt-6"></div>
+          <div className="mt-4 flex flex-col gap-4 sm:mt-6">
             <h3 className="text-xl font-bold text-slate-900">Vị trí của bạn</h3>
             <div
               onClick={() => setIsMapModalOpen(true)}
@@ -254,7 +254,7 @@ export default function ListingDetailPage() {
                 }
               />
               <div className="absolute inset-0 bg-black/10 flex items-center justify-center group-hover:bg-black/20 transition-all">
-                <button className="bg-white text-slate-900 px-6 py-3 rounded-full font-bold shadow-xl hover:scale-110 active:scale-95 transition-all flex items-center gap-2">
+                <button className="flex items-center gap-2 rounded-full bg-white px-4 py-2.5 text-sm font-bold text-slate-900 shadow-xl transition-all hover:scale-110 active:scale-95 sm:px-6 sm:py-3 sm:text-base">
                   <MapPin size={20} className="text-primary" />
                   Xem bản đồ chi tiết
                 </button>
@@ -274,14 +274,14 @@ export default function ListingDetailPage() {
         </div>
 
         {/* LandLord Profile */}
-        <div className="lg:col-span-1 relative mt-6">
-          <div className="sticky top-24 flex flex-col gap-6">
-            <div className="bg-white rounded-xl border border-slate-200 shadow-xl p-6 flex flex-col gap-6">
+        <div className="relative mt-5 lg:col-span-1 lg:mt-6">
+          <div className="flex flex-col gap-5 lg:sticky lg:top-24 lg:gap-6">
+            <div className="flex flex-col gap-5 rounded-xl border border-slate-200 bg-white p-4 shadow-xl sm:p-5 lg:p-6">
               <div className="flex items-end justify-between border-b border-slate-100 pb-4">
                 <div>
                   <p className="text-sm text-slate-500">Giá thuê mỗi tháng</p>
                   <div className="flex items-baseline gap-1">
-                    <span className="text-3xl font-black text-primary">
+                    <span className="text-2xl font-black text-primary sm:text-3xl">
                       {formatVietnamesePrice(
                         listing.price?.toLocaleString("vi-VN")
                       )}
@@ -289,15 +289,15 @@ export default function ListingDetailPage() {
                   </div>
                 </div>
                 <div className="flex gap-2">
-                  <button className="size-10 rounded-full flex items-center justify-center bg-slate-100 text-slate-600 hover:text-red-500 transition-colors">
+                  <button className="flex size-9 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:text-red-500 sm:size-10">
                     <Heart size={20} />
                   </button>
-                  <button className="size-10 rounded-full flex items-center justify-center bg-slate-100 text-slate-600 hover:text-primary transition-colors">
+                  <button className="flex size-9 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:text-primary sm:size-10">
                     <Share2 size={20} />
                   </button>
                 </div>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3 sm:gap-4">
                 <Avatar
                   avatar={listing.owner.avatar}
                   name={listing.owner.full_name}
@@ -320,12 +320,12 @@ export default function ListingDetailPage() {
                 <button 
                   onClick={handleContactHost}
                   disabled={isContacting}
-                  className="w-full bg-primary hover:bg-blue-600 text-white font-bold h-12 rounded-lg flex items-center justify-center gap-2 transition-all disabled:opacity-70 disabled:cursor-not-allowed"
+                  className="flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-primary text-sm font-bold text-white transition-all hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-70 sm:h-12 sm:text-base"
                 >
                   <Mail size={20} />
                   {isContacting ? "Đang kết nối..." : "Liên hệ chủ nhà"}
                 </button>
-                <button className="w-full bg-transparent border border-primary text-primary hover:bg-primary/10 font-bold h-12 rounded-lg flex items-center justify-center gap-2 transition-all">
+                <button className="flex h-11 w-full items-center justify-center gap-2 rounded-lg border border-primary bg-transparent text-sm font-bold text-primary transition-all hover:bg-primary/10 sm:h-12 sm:text-base">
                   <CalendarDays size={20} />
                   Yêu cầu xem nhà
                 </button>
@@ -334,7 +334,7 @@ export default function ListingDetailPage() {
                 Thường phản hồi trong 1 giờ
               </p>
             </div>
-            <div className="bg-slate-100 rounded-lg p-4 flex gap-3 items-start border border-slate-200">
+            <div className="flex items-start gap-3 rounded-lg border border-slate-200 bg-slate-100 p-3.5 sm:p-4">
               <Shield size={20} className="text-primary mt-0.5" />
               <div>
                 <p className="text-sm font-bold text-slate-900 mb-1">

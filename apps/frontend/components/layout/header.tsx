@@ -1,17 +1,13 @@
 "use client";
 
 import {
-  Handshake,
   Menu,
   Heart,
   X,
   Home,
-  Search,
-  Users,
   LogOut,
   User as UserIcon,
   PlusCircle,
-  ShieldCheck,
 } from "lucide-react";
 import Link from "next/link";
 import { useAuthStore } from "@/store/auth.store";
@@ -153,7 +149,7 @@ export default function AppHeader() {
           }`}
           style={{ top: "0" }}
         >
-          <div className="flex flex-col h-full p-6 space-y-8 overflow-y-auto pt-20">
+          <div className="flex h-full flex-col space-y-6 overflow-y-auto p-5 pt-18">
             {/* Mobile Menu Header with Close Button */}
             <div className="flex items-center justify-between border-b border-slate-50 pb-4">
               <span className="font-black text-slate-400 uppercase text-xs tracking-[0.2em]">
@@ -206,22 +202,6 @@ export default function AppHeader() {
                 <Home className="w-5 h-5 text-primary" />
                 Thuê nhà
               </Link>
-              <Link
-                href="#"
-                onClick={() => setIsMenuOpen(false)}
-                className="flex items-center gap-4 p-4 rounded-xl hover:bg-slate-50 text-slate-900 font-bold transition-all border border-transparent hover:border-slate-100"
-              >
-                <Search className="w-5 h-5 text-primary" />
-                Mua nhà
-              </Link>
-              <Link
-                href="#"
-                onClick={() => setIsMenuOpen(false)}
-                className="flex items-center gap-4 p-4 rounded-xl hover:bg-slate-50 text-slate-900 font-bold transition-all border border-transparent hover:border-slate-100"
-              >
-                <Users className="w-5 h-5 text-primary" />
-                Tìm môi giới
-              </Link>
             </nav>
 
             {/* Mobile Actions */}
@@ -266,9 +246,6 @@ export default function AppHeader() {
               )}
             </div>
 
-            <div className="pt-8 text-center uppercase tracking-tighter text-[10px] text-slate-400 font-bold">
-              &copy; 2024 RentalHome. All rights reserved.
-            </div>
           </div>
         </div>
       </ModalPortal>

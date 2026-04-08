@@ -75,24 +75,66 @@ export default function ListingGallery({
         </button>
       </div>
 
-      {/* Gallery Grid - Airbnb Style */}
+      {/* Gallery Grid - Mobile */}
+      <div className="relative rounded-2xl shadow-2xl md:hidden">
+        <div className="grid grid-cols-2 gap-2 overflow-hidden rounded-2xl">
+          <div
+            className="relative col-span-2 h-56 cursor-pointer overflow-hidden"
+            onClick={() => openModal(0)}
+          >
+            <Image
+              src={images[0]}
+              alt="Main listing view"
+              fill
+              className="object-cover transition-transform duration-700 hover:scale-105"
+              priority
+              sizes="100vw"
+            />
+          </div>
+          {images.slice(1, 5).map((img, idx) => (
+            <div
+              key={img + idx}
+              className="relative h-28 cursor-pointer overflow-hidden"
+              onClick={() => openModal(idx + 1)}
+            >
+              <Image
+                src={img}
+                alt={`Interior ${idx + 1}`}
+                fill
+                className="object-cover transition-all duration-300 hover:brightness-90"
+                sizes="50vw"
+              />
+            </div>
+          ))}
+        </div>
+        <button
+          onClick={() => openModal(0)}
+          className="absolute bottom-3 right-3 z-10 flex items-center gap-1.5 rounded-lg border border-text-main bg-white px-3 py-1.5 text-xs font-bold text-text-main shadow-xl transition-all active:scale-95"
+        >
+          <Grid size={14} />
+          {images.length > 4
+            ? `Xem tất cả ${images.length} hình ảnh`
+            : "Xem tất cả hình ảnh"}
+        </button>
+      </div>
+
+      {/* Gallery Grid - Desktop */}
       <div
-        className={`grid gap-2 h-87.5 md:h-125 rounded-2xl overflow-hidden shadow-2xl relative group ${
+        className={`relative hidden h-125 overflow-hidden rounded-2xl shadow-2xl md:grid md:gap-2 md:group ${
           images.length === 1
-            ? "grid-cols-1"
+            ? "md:grid-cols-1"
             : images.length === 2
-            ? "grid-cols-2"
-            : "grid-cols-4 grid-rows-2"
+            ? "md:grid-cols-2"
+            : "md:grid-cols-4 md:grid-rows-2"
         }`}
       >
-        {/* Main large image */}
         <div
           className={`relative cursor-pointer overflow-hidden ${
             images.length === 1
               ? "col-span-1"
               : images.length === 2
               ? "col-span-1"
-              : "col-span-4 md:col-span-2 row-span-2"
+              : "col-span-2 row-span-2"
           }`}
           onClick={() => openModal(0)}
         >
@@ -104,24 +146,19 @@ export default function ListingGallery({
             priority
             sizes="(max-width: 768px) 100vw, 50vw"
           />
-          <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300" />
+          <div className="absolute inset-0 bg-black/0 transition-colors duration-300 group-hover:bg-black/10" />
         </div>
 
-        {/* Smaller images (only visible if available and on desktop) */}
         {images.length >= 2 && (
           <div
-            className={`relative cursor-pointer overflow-hidden border-white ${
-              images.length === 2
-                ? "col-span-1 border-l-2"
-                : "hidden md:block col-span-1 border-l-2"
-            }`}
+            className="relative col-span-1 cursor-pointer overflow-hidden border-l-2 border-white"
             onClick={() => openModal(1)}
           >
             <Image
               src={images[1]}
               alt="Interior 1"
               fill
-              className="object-cover hover:brightness-90 transition-all duration-300"
+              className="object-cover transition-all duration-300 hover:brightness-90"
               sizes="25vw"
             />
           </div>
@@ -129,14 +166,14 @@ export default function ListingGallery({
 
         {images.length >= 3 && (
           <div
-            className="hidden md:block relative cursor-pointer overflow-hidden border-l-2 border-white"
+            className="relative col-span-1 cursor-pointer overflow-hidden border-l-2 border-white"
             onClick={() => openModal(2)}
           >
             <Image
               src={images[2]}
               alt="Interior 2"
               fill
-              className="object-cover hover:brightness-90 transition-all duration-300"
+              className="object-cover transition-all duration-300 hover:brightness-90"
               sizes="25vw"
             />
           </div>
@@ -144,23 +181,22 @@ export default function ListingGallery({
 
         {images.length >= 4 && (
           <div
-            className="hidden md:block relative cursor-pointer overflow-hidden border-t-2 border-l-2 border-white"
+            className="relative col-span-1 cursor-pointer overflow-hidden border-l-2 border-t-2 border-white"
             onClick={() => openModal(3)}
           >
             <Image
               src={images[3]}
               alt="Interior 3"
               fill
-              className="object-cover hover:brightness-90 transition-all duration-300"
+              className="object-cover transition-all duration-300 hover:brightness-90"
               sizes="25vw"
             />
           </div>
         )}
 
-        {/* See all photos button */}
         <button
           onClick={() => openModal(0)}
-          className="absolute bottom-4 right-4 flex items-center gap-2 bg-white border border-text-main px-4 py-2 rounded-lg shadow-xl text-sm font-bold text-text-main hover:bg-gray-50 transition-all transform active:scale-95 z-10"
+          className="absolute bottom-4 right-4 z-10 flex items-center gap-2 rounded-lg border border-text-main bg-white px-4 py-2 text-sm font-bold text-text-main shadow-xl transition-all active:scale-95"
         >
           <Grid size={16} />
           {images.length > 4
