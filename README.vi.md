@@ -100,11 +100,11 @@ graph TD
 
 ## 📜 Tài liệu API
 
-Dự án cung cấp tài liệu API tương tác bằng **Swagger UI** để test nhanh và thuận tiện cho nhà tuyển dụng/reviewer.  
-Dưới đây là video demo hệ thống API Gateway:
+Dự án cung cấp tài liệu API tương tác bằng **Swagger UI** để test nhanh và thuận tiện cho nhà tuyển dụng/reviewer.
 
-<video src="./assets/API_Gateway.mp4" controls="controls" muted="muted" playsinline="playsinline" width="100%">
-</video>
+Dưới đây là video demo hệ thống API Gateway. **README trên GitHub không nhúng được player MP4**, nên hãy bấm link để mở hoặc tải file.
+
+- **[Xem demo API Gateway (MP4)](./assets/API_Gateway.mp4)**
 
 - **Swagger (Local):** `http://localhost:5000/api-docs`
 - **Swagger (Production):** `https://rental.daoduck.id.vn/api-docs/`
