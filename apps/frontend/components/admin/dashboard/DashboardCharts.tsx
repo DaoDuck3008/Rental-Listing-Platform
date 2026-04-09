@@ -17,7 +17,7 @@ export const DashboardCharts = ({ charts }: { charts: ChartData }) => {
     <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
       
       {/* Post Growth Chart */}
-      <div className="bg-white dark:bg-[#1a202c] rounded-xl p-6 shadow-sm border border-[#e7edf3] dark:border-slate-700">
+      <div className="bg-white  rounded-xl p-6 shadow-sm border border-[#e7edf3] ">
         <div className="flex justify-between items-start mb-6">
           <div>
             <p className="text-slate-500 text-sm">Số lượng bài đăng mới trong 30 ngày qua</p>
@@ -48,7 +48,7 @@ export const DashboardCharts = ({ charts }: { charts: ChartData }) => {
       </div>
 
       {/* User Growth Chart */}
-      <div className="bg-white dark:bg-[#1a202c] rounded-xl p-6 shadow-sm border border-[#e7edf3] dark:border-slate-700">
+      <div className="bg-white  rounded-xl p-6 shadow-sm border border-[#e7edf3] ">
         <div className="flex justify-between items-start mb-6">
           <div>
             <p className="text-slate-500 text-sm">Tăng trưởng người dùng 30 ngày qua</p>
@@ -73,10 +73,10 @@ export const DashboardCharts = ({ charts }: { charts: ChartData }) => {
       </div>
 
       {/* Listing Type Pie Chart */}
-      <div className="bg-white dark:bg-[#1a202c] rounded-xl p-6 shadow-sm border border-[#e7edf3] dark:border-slate-700">
+      <div className="bg-white  rounded-xl p-6 shadow-sm border border-[#e7edf3] ">
         <div className="flex justify-between items-start mb-2">
           <div>
-            <h3 className="text-[#0d141b] dark:text-white text-lg font-bold">Phân bổ Bất động sản</h3>
+            <h3 className="text-[#0d141b]  text-lg font-bold">Phân bổ Bất động sản</h3>
             <p className="text-slate-500 text-sm">Theo từng loại hình cho thuê</p>
           </div>
         </div>

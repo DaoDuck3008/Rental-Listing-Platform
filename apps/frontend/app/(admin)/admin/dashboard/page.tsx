@@ -51,7 +51,7 @@ export default function DashboardAdminPage() {
         <div className="max-w-300 mx-auto flex flex-col gap-6 md:gap-8 pb-10">
           {/* Page Heading */}
           <div className="flex flex-col gap-1">
-            <h2 className="text-text-main dark:text-white text-2xl md:text-3xl font-extrabold leading-tight tracking-tight">
+            <h2 className="text-text-main  text-2xl md:text-3xl font-extrabold leading-tight tracking-tight">
               Tổng quan hệ thống
             </h2>
             <p className="text-text-secondarytext-sm md:text-base font-medium">
