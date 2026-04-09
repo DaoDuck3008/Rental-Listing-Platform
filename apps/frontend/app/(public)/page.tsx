@@ -114,7 +114,7 @@ export default function Home() {
     { label: "1 - 3 triệu", value: { min: 1000000, max: 3000000 } },
     { label: "3 - 5 triệu", value: { min: 3000000, max: 5000000 } },
     { label: "5 - 10 triệu", value: { min: 5000000, max: 10000000 } },
-    { label: "Trên 10 triệu", value: { min: 10000000, max: 1000000000 } },
+    { label: "Trên 10 triệu", value: { min: 10000000, max: 500000000 } },
   ];
 
   const typeOptions = [
