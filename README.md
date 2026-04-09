@@ -97,6 +97,35 @@ graph TD
 
 ---
 
+## 📜 API Documentation
+
+We provide interactive API documentation with **Swagger UI** for quick testing and recruiter review.
+
+- **Swagger (Local):** `http://localhost:5000/api-docs`
+- **Swagger (Production):** `https://rental.daoduck.id.vn/api-docs/`
+- **Health Check:** `GET /` 
+
+### Main API Groups
+
+- **Auth:** `/api/auth`
+- **Listings:** `/api/listings`
+- **Users:** `/api/users`
+- **Notifications:** `/api/notifications`
+
+### Demo Test Account (Placeholder)
+
+- **Email:** `reviewer.demo@example.com`
+- **Password:** `Demo@123456`
+- **Role:** `User` (non-admin)
+
+
+### Production Security Note
+
+To protect sensitive operations, **Admin routes are hidden from public Swagger docs in production**.  
+Admin APIs are still protected by authentication and role-based access control (RBAC) at runtime.
+
+---
+
 ## 🚀 Getting Started
 
 ### Prerequisites

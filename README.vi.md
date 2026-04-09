@@ -98,6 +98,39 @@ graph TD
 
 ---
 
+## 📜 Tài liệu API
+
+Dự án cung cấp tài liệu API tương tác bằng **Swagger UI** để test nhanh và thuận tiện cho nhà tuyển dụng/reviewer.  
+Dưới đây là video demo hệ thống API Gateway:
+
+<video src="./assets/API_Gateway.mp4" controls="controls" muted="muted" playsinline="playsinline" width="100%">
+</video>
+
+- **Swagger (Local):** `http://localhost:5000/api-docs`
+- **Swagger (Production):** `https://rental.daoduck.id.vn/api-docs/`
+- **Health Check:** `GET /`
+
+### Nhóm API chính
+
+- **Auth:** `/api/auth`
+- **Listings:** `/api/listings`
+- **Users:** `/api/users`
+- **Notifications:** `/api/notifications`
+
+### Tài khoản test demo
+
+- **Email:** `reviewer.demo@example.com`
+- **Password:** `Demo@123456`
+- **Role:** `User` (không phải admin)
+
+
+### Ghi chú bảo mật trên Production
+
+Để đảm bảo an toàn, **các Admin routes đã được ẩn khỏi Swagger public ở môi trường production**.  
+Các API admin vẫn được bảo vệ bởi xác thực và phân quyền vai trò (RBAC) trong runtime.
+
+---
+
 ## 🚀 Bắt đầu
 
 ### Yêu cầu hệ thống
