@@ -100,6 +100,10 @@ graph TD
 ## 📜 API Documentation
 
 We provide interactive API documentation with **Swagger UI** for quick testing and recruiter review.
+Below is a demonstration of our API Gateway:
+
+<video src="./assets/API_Gateway.mp4" controls="controls" muted="muted" playsinline="playsinline" width="100%">
+</video>
 
 - **Swagger (Local):** `http://localhost:5000/api-docs`
 - **Swagger (Production):** `https://rental.daoduck.id.vn/api-docs/`
@@ -112,7 +116,7 @@ We provide interactive API documentation with **Swagger UI** for quick testing a
 - **Users:** `/api/users`
 - **Notifications:** `/api/notifications`
 
-### Demo Test Account (Placeholder)
+### Demo Test Account
 
 - **Email:** `reviewer.demo@example.com`
 - **Password:** `Demo@123456`
