@@ -81,7 +81,7 @@ export default function FillProfileModal({
   return (
     <ModalPortal>
       {/* OVERLAY */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-3 sm:p-4">
+      <div className="fixed inset-0 z-9999 flex items-center justify-center bg-black/40 p-3 sm:p-4">
         {/* MODAL */}
         <div className="w-full max-w-md animate-fade-in-up sm:max-w-250">
           <div className="flex flex-col overflow-hidden rounded-xl bg-white shadow-2xl">

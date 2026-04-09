@@ -13,6 +13,9 @@ export default function GoogleLoginButton() {
 
   return (
     <GoogleLogin
+      containerProps={{
+        className: "w-full flex items-center cursor-pointer justify-center gap-3 bg-white  text-slate-700  font-bold py-3 my-2 px-4 rounded-lg transition-all duration-200 h-12",
+      }}
       onSuccess={async (credentialResponse) => {
         try {
           const result = await googleLogin(credentialResponse.credential!);
