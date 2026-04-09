@@ -11,7 +11,7 @@ import ModalPortal from "../ui/modalPortal";
 import { useEffect, useState } from "react";
 import Dropzone from "../common/dropzone";
 import { toast } from "react-toastify";
-import { updateUserProfile } from "@/services/user.api";
+import { fillUserProfile } from "@/services/user.api";
 import { handleError } from "@/utils";
 
 interface UserProfileProps {
@@ -53,7 +53,7 @@ export default function FillProfileModal({
         return;
       }
 
-      const result = await updateUserProfile({
+      const result = await fillUserProfile({
         role,
         avatar,
         phone_number,

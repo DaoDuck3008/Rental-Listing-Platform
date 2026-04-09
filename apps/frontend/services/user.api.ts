@@ -18,6 +18,18 @@ export const getUserProfile = async () => {
 
 export const updateUserProfile = async (data: UserForm) => {
   try {
+    return api.patch("/api/users/profile", data, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+  } catch (error: any) {
+    throw error;
+  }
+};
+
+export const fillUserProfile = async (data: UserForm) => {
+  try {
     return api.put("/api/users/profile", data, {
       headers: {
         "Content-Type": "multipart/form-data",
