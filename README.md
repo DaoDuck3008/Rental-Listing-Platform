@@ -28,6 +28,7 @@
 ## 🌟 Key Features
 
 ### 🏢 For Users & Renters
+
 - **Advanced Search & Filtering**: Find properties by location, price range, and categories with a responsive, high-performance UI.
 - **Interactive Maps**: Seamless integration with **Google Maps API** for precise location viewing.
 - **Rich Property Details**: Multi-image uploads via **Cloudinary**, interactive carousels, and rich-text descriptions (Tiptap).
@@ -35,10 +36,12 @@
 - **Google OAuth**: Fast and secure login experience using **Google Identity Services**.
 
 ### 🛠️ Technical Excellence
+
 - **Middleware-based Security**: Implemented **Helmet**, **CORS**, and custom JWT-based authentication.
 - **Rate Limiting**: Integrated **Redis** for efficient API rate limiting to prevent DDoS attacks and spam.
 - **Real-time Communication**: **Socket.io** integration for potential live chat or notification systems.
 - **Caching Data**: Using **Redis** for efficient API caching.
+
 ---
 
 ## 🏗️ System Architecture
@@ -79,6 +82,7 @@ graph TD
 ## 💻 Tech Stack
 
 ### Frontend
+
 - **Framework**: [Next.js 16](https://nextjs.org/) (App Router, Server Actions)
 - **UI Library**: [React 19](https://react.dev/)
 - **Styling**: [Tailwind CSS 4.0](https://tailwindcss.com/) (Next-gen CSS performance)
@@ -88,6 +92,7 @@ graph TD
 - **Icons**: [Lucide React](https://lucide.dev/)
 
 ### Backend
+
 - **Framework**: [Express 5](https://expressjs.com/) (Node.js)
 - **Database**: [PostgreSQL](https://www.postgresql.org/) with [Sequelize ORM](https://sequelize.org/)
 - **Security**: [Redis](https://redis.io/) (Rate limiting), [Helmet](https://helmetjs.github.io/), [Bcrypt](https://github.com/kelektiv/node.bcrypt.js)
@@ -107,7 +112,7 @@ Below is a short walkthrough of the API Gateway. **GitHub README does not embed 
 
 - **Swagger (Local):** `http://localhost:5000/api-docs`
 - **Swagger (Production):** `https://rental.daoduck.id.vn/api-docs/`
-- **Health Check:** `GET /` 
+- **Health Check:** `GET /`
 
 ### Main API Groups
 
@@ -122,7 +127,6 @@ Below is a short walkthrough of the API Gateway. **GitHub README does not embed 
 - **Password:** `Demo@123456`
 - **Role:** `User` (non-admin)
 
-
 ### Production Security Note
 
 To protect sensitive operations, **Admin routes are hidden from public Swagger docs in production**.  
@@ -133,6 +137,7 @@ Admin APIs are still protected by authentication and role-based access control (
 ## 🚀 Getting Started
 
 ### Prerequisites
+
 - Node.js (v18+)
 - PostgreSQL
 - Redis
@@ -145,6 +150,7 @@ Choose one of the following methods to get the project running:
 #### Method 1: Docker (Quickest Setup)
 
 1. **Clone the repository**:
+
    ```bash
    git clone https://github.com/DaoDuck3008/Rental-Listing-Platform.git
    cd Rental-Listing-Platform
@@ -152,15 +158,18 @@ Choose one of the following methods to get the project running:
 
 2. **Setup environment variables**:
    Create `.env` files in both frontend and backend directories.
+
    ```bash
    cp apps/backend/.env.example apps/backend/.env
    cp apps/frontend/.env.example apps/frontend/.env
    ```
 
 3. **Start all services**:
+
    ```bash
    docker-compose up --build -d
    ```
+
    > **Note**: The application will be available at `http://localhost:3000`. Docker Compose will automatically spin up PostgreSQL, Redis, Backend (port 5000), and Frontend. The backend container will automatically run the database migrations on startup.
 
 4. **Seed the database (Optional but recommended)**:
@@ -168,15 +177,18 @@ Choose one of the following methods to get the project running:
    ```bash
    docker exec -it rental_backend npx sequelize-cli db:seed:all
    ```
+
 #### Method 2: Manual Installation (If you don't use Docker)
 
 1. **Clone the repository**:
+
    ```bash
    git clone https://github.com/DaoDuck3008/Rental-Listing-Platform.git
    cd Rental-Listing-Platform
    ```
 
 2. **Backend Setup**:
+
    ```bash
    cd apps/backend
    npm install
@@ -195,19 +207,12 @@ Choose one of the following methods to get the project running:
 
 ---
 
-## 🎨 Preview
-
-| Dashboard Stats | Property Search |
-| :---: | :---: |
-| ![Stats Preview](https://via.placeholder.com/400x250?text=Dashboard+Stats+Preview+Using+Recharts) | ![Search Preview](https://via.placeholder.com/400x250?text=Search+Filters+with+Google+Maps) |
-
----
-
 ## 👨‍💻 Author
 
 **Dao Anh Duc**
-- LinkedIn: [Your Profile](https://linkedin.com/in/your-profile)
+
 - GitHub: [@DaoDuck3008](https://github.com/DaoDuck3008)
 
 ---
-*Developed as part of a high-performance rental solution project.*
+
+_Developed as part of a high-performance rental solution project._
